@@ -1,0 +1,63 @@
+eqf:
+  initialVariance:
+    attitude: 1.0
+    position: 1.0
+    velocity: 1.0
+    point: 5000.0
+    cameraAttitude: 0.1
+    cameraPosition: 0.1
+    biasGyr: 1.0
+    biasAcc: 1.0
+  processVariance:
+    cameraPosition: 0.0001
+    cameraAttitude: 0.0001 
+    biasGyr: 0.0001
+    biasAcc: 0.0001
+    attitude: 0.01
+    position: 0.01
+    velocity: 0.1
+    point: 0.001
+  initialValue:
+    sceneDepth: 1.0
+    cameraOffset:
+      - xw
+      - -0.0216401454975
+      - -0.064676986768
+      - 0.00981073058949
+      - 0.7123014606690344
+      - -0.007707179755538301
+      - 0.010499323370588468
+      - 0.7017528002920512
+  measurementNoise:
+    feature: 0.003
+    featureOutlierAbs: 0.01
+    featureOutlierProb: 3.0
+    featureRetention: 0.2
+  velocityNoise:
+    gyr: 0.0001
+    acc: 0.0001
+    gyrBias: 0.0001
+    accBias: 0.0001
+  settings:
+    fastRiccati: false
+    useDiscreteInnovationLift: true
+    useDiscreteVelocityLift: true
+    coordinateChoice: Euclidean
+    useMedianDepth: true
+    useFeaturePredictions: false
+    useEquivariantOutput: true
+GIFT:
+  intrinsicsFile: intrinsics_example.yaml
+  maxFeatures: 30
+  featureDist: 30
+  minHarrisQuality: 0.05
+  featureSearchThreshold: 0.8
+  maxError: 1e8
+  winSize: 21
+  maxLevel: 3
+  trackedFeatureDist: 20.0
+  equaliseImageHistogram: false
+main:
+  writeState: false
+  showVisualisation: true
+  limitRate: 20.0 # Hz

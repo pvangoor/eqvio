@@ -1,0 +1,76 @@
+GIFT:
+  equaliseImageHistogram: false
+  featureDist: 85.14085350941133
+  featureSearchThreshold: 0.4678407422980303
+  maxError: 24.859286812166822
+  maxFeatures: 40
+  maxLevel: 3
+  minHarrisQuality: 0.041154574134693075
+  ransacParams:
+    inlierThreshold: 0.0023054130418769516
+    maxIterations: 53
+    minDataPoints: 5
+    minInliers: 47
+  trackedFeatureDist: 18.31029378391811
+  winSize: 13
+eqf:
+  initialValue:
+    sceneDepth: 5.063359392968643
+  initialVariance:
+    attitude: 0.09440608762859234
+    biasAcc: 0.6343716263804418
+    biasGyr: 2.859235978270507
+    cameraAttitude: 0.01690927549681094
+    cameraPosition: 0.010721941602677596
+    point: 77.24860136667657
+    position: 0.1
+    velocity: 7.286181745132278e-05
+  measurementNoise:
+    feature: 0.5334515782275915
+    featureOutlierAbs: 4.281940468140158
+    featureOutlierProb: 0.10406031980156036
+    featureRetention: 0.2276564690508065
+  processVariance:
+    attitude: 1.584893192461114e-05
+    biasAcc: 0.0
+    biasGyr: 0.0
+    cameraAttitude: 8.535913392913662e-07
+    cameraPosition: 5.892675149026958e-05
+    point: 0.001
+    position: 1.0e-05
+    velocity: 0.0009172759353897796
+  settings:
+    coordinateChoice: InvDepth
+    fastRiccati: true
+    useDiscreteInnovationLift: false
+    useDiscreteVelocityLift: true
+    useEquivariantOutput: true
+    useFeaturePredictions: false
+    useInnovationLift: true
+    useMedianDepth: false
+  velocityNoise:
+    acc: 0.0031188805760819604
+    accBias: 0.009484699993745682
+    gyr: 0.0001556083863968156
+    gyrBias: 4.324987346585896e-05
+main:
+  cameraLag: 0.010541058194473643
+  limitRate: 0.0
+  startTime: 0.0
+  writeFilter: false
+  writeState: true
+sim:
+  cameraOffset:
+  - xw
+  - -0.04844625116694773
+  - -0.08142350220051031
+  - 0.003102425417307478
+  - 0.7021240268103595
+  - -0.006484783602096129
+  - 0.013217864997878212
+  - 0.7017528002920512
+  fieldOfView: 60
+  maxFeatures: 40
+  numPoints: 5000
+  randomSeed: 0
+  wallDistance: 1.0
