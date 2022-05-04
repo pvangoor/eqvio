@@ -1,5 +1,4 @@
-# EqVIO (Equivariant Visual Inertial Odometry) <!-- {#mainpage} -->
-<!-- TODO: Fix the mainpage tag -->
+# EqVIO (Equivariant Visual Inertial Odometry)
 
 This repository contains the implementation of EqVIO: An Equivariant Filter (EqF) for Visual Inertial Odometry (VIO).
 
