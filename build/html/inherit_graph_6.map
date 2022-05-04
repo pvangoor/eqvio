@@ -1,0 +1,5 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classDataServerBase.html" title="The common interface of data servers." alt="" coords="5,31,132,57"/>
+<area shape="rect" id="node2" href="$classSimpleDataServer.html" title="The simplest implementation of a data server." alt="" coords="188,5,328,32"/>
+<area shape="rect" id="node3" href="$classThreadedDataServer.html" title="A threaded implementation of a data server." alt="" coords="180,56,336,83"/>
+</map>

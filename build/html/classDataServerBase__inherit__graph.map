@@ -1,0 +1,5 @@
+<map id="DataServerBase" name="DataServerBase">
+<area shape="rect" id="node1" title="The common interface of data servers." alt="" coords="97,5,224,32"/>
+<area shape="rect" id="node2" href="$classSimpleDataServer.html" title="The simplest implementation of a data server." alt="" coords="5,80,145,107"/>
+<area shape="rect" id="node3" href="$classThreadedDataServer.html" title="A threaded implementation of a data server." alt="" coords="169,80,325,107"/>
+</map>

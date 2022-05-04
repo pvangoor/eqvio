@@ -1,3 +1,6 @@
 .vscode/*
-build/*
 build_stable/*
+
+!/build
+/build/*
+!build/html

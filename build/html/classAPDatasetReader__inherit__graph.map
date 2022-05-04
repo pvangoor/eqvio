@@ -1,0 +1,4 @@
+<map id="APDatasetReader" name="APDatasetReader">
+<area shape="rect" id="node1" title="The ardupilot dataset reader." alt="" coords="13,80,149,107"/>
+<area shape="rect" id="node2" href="$classDatasetReaderBase.html" title="The common interface of all dataset readers." alt="" coords="5,5,156,32"/>
+</map>
