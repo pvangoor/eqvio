@@ -1,4 +1,0 @@
-<map id="SimpleDataServer" name="SimpleDataServer">
-<area shape="rect" id="node1" title="The simplest implementation of a data server." alt="" coords="5,80,145,107"/>
-<area shape="rect" id="node2" href="$classDataServerBase.html" title="The common interface of data servers." alt="" coords="12,5,139,32"/>
-</map>

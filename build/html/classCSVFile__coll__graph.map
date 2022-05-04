@@ -1,5 +1,0 @@
-<map id="CSVFile" name="CSVFile">
-<area shape="rect" id="node1" title="A class for opening and reading CSV files." alt="" coords="17,184,88,211"/>
-<area shape="rect" id="node2" href="$classCSVReader.html" title=" " alt="" coords="5,95,100,121"/>
-<area shape="rect" id="node3" href="$classCSVLine.html" title="A line of csv values." alt="" coords="15,5,90,32"/>
-</map>

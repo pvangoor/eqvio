@@ -1,6 +1,0 @@
-<map id="DatasetReaderBase" name="DatasetReaderBase">
-<area shape="rect" id="node1" title="The common interface of all dataset readers." alt="" coords="162,5,313,32"/>
-<area shape="rect" id="node2" href="$classAPDatasetReader.html" title="The ardupilot dataset reader." alt="" coords="5,80,141,107"/>
-<area shape="rect" id="node3" href="$classASLDatasetReader.html" title="The ASL dataset reader." alt="" coords="166,80,309,107"/>
-<area shape="rect" id="node4" href="$classUZHFPVDatasetReader.html" title="The UZH&#45;FPV dataset reader." alt="" coords="333,80,507,107"/>
-</map>

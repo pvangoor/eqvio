@@ -1,4 +1,0 @@
-<map id="LoopTimer" name="LoopTimer">
-<area shape="rect" id="node1" title="A class for timing the processing speed of code sections in a loop." alt="" coords="62,95,153,121"/>
-<area shape="rect" id="node2" href="$structLoopTimer_1_1LoopTimingData.html" title="a struct to contain a time stamp and map from labels to timer duration" alt="" coords="5,5,209,32"/>
-</map>

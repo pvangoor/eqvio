@@ -1,7 +1,0 @@
-<map id="UZHFPVDatasetReader" name="UZHFPVDatasetReader">
-<area shape="rect" id="node1" title="The UZH&#45;FPV dataset reader." alt="" coords="38,288,211,315"/>
-<area shape="rect" id="node2" href="$classDatasetReaderBase.html" title="The common interface of all dataset readers." alt="" coords="5,184,156,211"/>
-<area shape="rect" id="node3" href="$classCSVFile.html" title="A class for opening and reading CSV files." alt="" coords="180,184,251,211"/>
-<area shape="rect" id="node4" href="$classCSVReader.html" title=" " alt="" coords="168,95,263,121"/>
-<area shape="rect" id="node5" href="$classCSVLine.html" title="A line of csv values." alt="" coords="178,5,253,32"/>
-</map>

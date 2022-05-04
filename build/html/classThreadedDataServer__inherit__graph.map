@@ -1,4 +1,0 @@
-<map id="ThreadedDataServer" name="ThreadedDataServer">
-<area shape="rect" id="node1" title="A threaded implementation of a data server." alt="" coords="5,80,161,107"/>
-<area shape="rect" id="node2" href="$classDataServerBase.html" title="The common interface of data servers." alt="" coords="20,5,147,32"/>
-</map>
