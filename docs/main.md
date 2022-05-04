@@ -8,7 +8,6 @@ This repository contains the implementation of EqVIO: An Equivariant Filter (EqF
 - Yaml-cpp: `sudo apt install libyaml-cpp-dev`
 - GIFT: `https://github.com/pvangoor/GIFT`
 
-
 ### Optional Dependencis
 
 - FreeGLUT (for visualisations): `sudo apt install freeglut3-dev`
@@ -19,12 +18,14 @@ This repository contains the implementation of EqVIO: An Equivariant Filter (EqF
 
 EqVIO is designed to be built as a cmake project rather than a ROS package.
 Assuming all prerequisites are installed and you are in the root folder of the repository, then you can follow these steps to build:
+
 ```
 mkdir build
 cd build
 cmake ..
 cmake --build . -j8
 ```
+
 Note: on older machines, it may be better to use `-j4` or even `-j2` instead of `-j8`.
 There are a number of flags that can be passed to cmake to influence the build process.
 The key flags related to eqvio are all prefixed `EQVIO_*`.
