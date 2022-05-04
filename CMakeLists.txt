@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(eqvio VERSION 0.1)
+project(eqvio VERSION 1.0)
 set(CMAKE_CXX_STANDARD 20)
 
 include(CheckCXXCompilerFlag)
@@ -271,6 +271,7 @@ if (EQVIO_BUILD_DOCS)
         ${EQVIO_HEADER_FILES}
         ${EQVIO_SOURCE_FILES}
         README.md
+        docs/main.md
         ALL
     )
 endif()
