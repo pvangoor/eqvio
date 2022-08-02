@@ -75,8 +75,8 @@ if (${GIFT_FOUND})
     set(GIFT_INCLUDE_DIRS "GIFT::GIFT")
 else()
     message("GIFT is being used as a git submodule.")
-    execute_process(COMMAND git submodule update --init --recursive --remote
-                    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/external/GIFT
+    execute_process(COMMAND git submodule update --init --recursive --remote ${PROJECT_SOURCE_DIR}/external/GIFT
+                    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                     RESULT_VARIABLE GIFT_SUBMOD_RESULT)
     if (${GIFT_SUBMOD_RESULT})
         message(FATAL_ERROR "GIFT was not found as a package and could not be included as a submodule.")
@@ -92,8 +92,8 @@ if (${argparse_FOUND})
     set(argparse_INCLUDE_DIRS "argparse::argparse")
 else()
     message("argparse is being used as a git submodule.")
-    execute_process(COMMAND git submodule update --init --recursive --remote
-                    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/external/argparse
+    execute_process(COMMAND git submodule update --init --recursive --remote ${PROJECT_SOURCE_DIR}/external/argparse
+                    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                     RESULT_VARIABLE argparse_SUBMOD_RESULT)
     if (${argparse_SUBMOD_RESULT})
         message(FATAL_ERROR "argparse was not found as a package and could not be included as a submodule.")
@@ -103,8 +103,8 @@ endif()
 
 # Add LiePP
 message("LiePP is being used as a git submodule.")
-execute_process(COMMAND git submodule update --init --recursive --remote
-                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/external/LiePP
+execute_process(COMMAND git submodule update --init --recursive --remote ${PROJECT_SOURCE_DIR}/external/LiePP
+                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                 RESULT_VARIABLE LiePP_SUBMOD_RESULT)
 if (${LiePP_SUBMOD_RESULT})
     message(FATAL_ERROR "LiePP could not be included as a submodule.")
