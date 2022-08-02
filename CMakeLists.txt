@@ -106,7 +106,7 @@ message("LiePP is being used as a git submodule.")
 execute_process(COMMAND git submodule update --init --recursive --remote
                 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/external/LiePP
                 RESULT_VARIABLE LiePP_SUBMOD_RESULT)
-if (${argparse_SUBMOD_RESULT})
+if (${LiePP_SUBMOD_RESULT})
     message(FATAL_ERROR "LiePP could not be included as a submodule.")
 endif()
 set(LiePP_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/external/LiePP/include")
