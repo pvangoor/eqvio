@@ -1,7 +1,0 @@
-.vscode/*
-build/*
-callgrind*
-GIFT/build/*
-GIFT/.vscode/*
-test/data/*
-GIFT_Monocular*.csv
