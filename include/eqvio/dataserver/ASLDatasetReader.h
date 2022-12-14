@@ -27,15 +27,17 @@
  */
 class ASLDatasetReader : public DatasetReaderBase {
   protected:
-    std::string cam_dir;  ///< The directory where camera images are stored.
-    CSVFile IMUCSVFile;   ///< The CSV file containing IMU velocities
-    CSVFile ImageCSVFile; ///< The CSV file containing image stamps and relative file names.
+    std::string groundtruthFileName; ///< The file containing groundtruth data
+    std::string cam_dir;             ///< The directory where camera images are stored.
+    CSVFile IMUCSVFile;              ///< The CSV file containing IMU velocities
+    CSVFile ImageCSVFile;            ///< The CSV file containing image stamps and relative file names.
 
   public:
     virtual std::unique_ptr<StampedImage> nextImage() override;
     virtual std::unique_ptr<IMUVelocity> nextIMU() override;
     virtual void readCamera(const std::string& cameraFileName) override;
+    virtual std::vector<StampedPose> groundtruth() override;
 
     /** @brief Construct the ASL dataset reader from the given dataset directory and simulation settings. */
-    ASLDatasetReader(const std::string& datasetFileName, const YAML::Node& simSettings = YAML::Node());
+    ASLDatasetReader(const std::string& datasetFileName);
 };

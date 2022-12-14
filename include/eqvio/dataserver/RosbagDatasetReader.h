@@ -43,5 +43,6 @@ class RosbagDatasetReader : public DatasetReaderBase {
 
     virtual std::unique_ptr<StampedImage> nextImage() override;
     virtual std::unique_ptr<IMUVelocity> nextIMU() override;
+    virtual std::vector<StampedPose> groundtruth() override{return {}};
     virtual void readCamera(const std::string& cameraFileName) override;
 };

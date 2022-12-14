@@ -57,10 +57,4 @@ class CSVFile {
         ++reader;
         return line;
     }
-
-    /** @brief Skip a line in the csv file.
-     *
-     * @todo Remove this in favor of using nextLine.
-     */
-    void skipLine() { ++reader; }
 };

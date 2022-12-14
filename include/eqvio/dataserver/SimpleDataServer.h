@@ -39,5 +39,5 @@ class SimpleDataServer : public DataServerBase {
      *
      * @param datasetReader An rvalue reference to a dataset reader unique_ptr.
      */
-    SimpleDataServer(std::unique_ptr<DatasetReaderBase>&& datasetReader);
+    SimpleDataServer(std::unique_ptr<DatasetReaderBase>&& datasetReader, const YAML::Node& simSettings = YAML::Node());
 };

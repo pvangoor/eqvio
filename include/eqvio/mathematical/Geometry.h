@@ -33,7 +33,8 @@ template <typename _Scalar, int _Rows> using Vector = Matrix<_Scalar, _Rows, 1>;
 #if EQVIO_SUPPORT_CONCEPTS
 #include <concepts>
 // Concept of manifold requires that the class has an int member called `CompDim'.
-template <typename T> concept Manifold = requires(T t) { std::is_same<decltype(&T::CompDim, char(0)), int>::value; };
+template <typename T>
+concept Manifold = requires(T t) { std::is_same<decltype(&T::CompDim, char(0)), int>::value; };
 #endif
 
 /** @brief A Coordiante chart for a given manifold M.
@@ -140,3 +141,18 @@ template <int EDim, int Dim = Eigen::Dynamic> struct EmbeddedCoordinateChart {
  */
 Eigen::MatrixXd numericalDifferential(
     std::function<Eigen::VectorXd(const Eigen::VectorXd&)> f, const Eigen::VectorXd& x, double h = -1.0);
+
+/** @brief Draw a sample from a multivariate Gaussian distribution
+ *
+ * @param covariance The covariance of the Gaussian distribution.
+ * @return A sample drawn from a zero-mean Gaussian distribution with the given covariance.
+ */
+Eigen::VectorXd sampleGaussianDistribution(const Eigen::MatrixXd& covariance);
+
+/** @brief Draw a number of samples from a multivariate Gaussian distribution
+ *
+ * @param covariance The covariance of the Gaussian distribution.
+ * @param numSamples The number of samples to draw.
+ * @return numSamples samples drawn from a zero-mean Gaussian distribution with the given covariance.
+ */
+std::vector<Eigen::VectorXd> sampleGaussianDistribution(const Eigen::MatrixXd& covariance, const size_t& numSamples);

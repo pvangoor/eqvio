@@ -72,6 +72,14 @@ struct VisionMeasurement {
  */
 VisionMeasurement operator-(const VisionMeasurement& y1, const VisionMeasurement& y2);
 
+/** @brief Add a vector to the vision measurement
+ *
+ * @param y The original measurement
+ * @param eta The noise sample to add
+ * @return A vision measurement with all the pixel coordinates shifted by the noise sample
+ */
+VisionMeasurement operator+(const VisionMeasurement& y, const Eigen::VectorXd& eta);
+
 /** @brief Write a vision measurement to a CSV line
  *
  * @param line A reference to the CSV line where the data should be written.

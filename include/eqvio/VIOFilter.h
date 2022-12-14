@@ -20,12 +20,13 @@
 #include <memory>
 #include <ostream>
 
-#include "eqvio/EqFMatrices.h"
-#include "eqvio/IMUVelocity.h"
-#include "eqvio/VIOGroup.h"
-#include "eqvio/VIOState.h"
-#include "eqvio/VisionMeasurement.h"
 #include "eqvio/csv/CSVReader.h"
+#include "eqvio/mathematical/EqFMatrices.h"
+#include "eqvio/mathematical/IMUVelocity.h"
+#include "eqvio/mathematical/VIOGroup.h"
+#include "eqvio/mathematical/VIOState.h"
+#include "eqvio/mathematical/VIO_eqf.h"
+#include "eqvio/mathematical/VisionMeasurement.h"
 
 /** @brief The implementation of the EqF for VIO.
  *
@@ -34,25 +35,14 @@
  */
 class VIOFilter {
   protected:
-    EqFCoordinateSuite const* coordinateSuite = &EqFCoordinateSuite_euclid; ///< The suite of EqF matrix functions.
-
-    VIOState xi0;                      ///< The fixed origin configuration.
-    VIOGroup X = VIOGroup::Identity(); ///< The EqF's observer state
-    Eigen::MatrixXd Sigma =
-        Eigen::MatrixXd::Identity(VIOSensorState::CompDim, VIOSensorState::CompDim); ///< The EqF's Riccati matrix
+    VIO_eqf filterState; ///< The state of the underlying EqF
 
     bool initialisedFlag = false; ///< True once the EqF has been initialised from an IMU velocity measurement.
-    double currentTime = -1;      ///< The time of the last measurement processed.
-    IMUVelocity currentVelocity = IMUVelocity::Zero(); ///< The latest IMU velocity measurement
-
-    IMUVelocity accumulatedVelocity =
-        IMUVelocity::Zero();      ///< The sum of all IMU velocities since the last image measurement.
-    double accumulatedTime = 0.0; ///< The time since the last image measurement.
+    std::vector<IMUVelocity> velocityBuffer; ///< The IMU velocity measurement buffer
 
     /** @brief Integrate the EqF dynamics to the given time without correction terms.
      *
      * @param newTime The time to which the EqF states should be integrated.
-     * @param doRiccati Propagate the Riccati matrix iff this is true.
      * @return True iff the integration could be performed.
      *
      * If doRiccati is set to true, then the Riccati matrix is propagated without the correction terms. This is an
@@ -60,7 +50,7 @@ class VIOFilter {
      * measurement by using the average IMU velocity. If newTime is less than the current filter time or the filter is
      * not yet initialised, then the integration cannot go ahead and this method returns false.
      */
-    bool integrateUpToTime(const double& newTime, const bool doRiccati = true);
+    bool integrateUpToTime(const double& newTime);
 
     /** @brief Add new landmarks to the EqF state from the provided features.
      *
@@ -71,15 +61,6 @@ class VIOFilter {
      * either the median scene depth or a fixed depth value.
      */
     void addNewLandmarks(const VisionMeasurement& measurement);
-
-    /** @brief Add new landmarks to the EqF state from the provided features.
-     *
-     * @param newLandmarks The landmarks to be added to the state.
-     *
-     * This method adds new landmarks to the state exactly as they are provided, and augments the Riccati matrix as
-     * appropriate.
-     */
-    void addNewLandmarks(std::vector<Landmark>& newLandmarks);
 
     /** @brief Removes all landmarks with id numbers that do not appear in measurementIds
      *
@@ -98,41 +79,9 @@ class VIOFilter {
      */
     void removeOutliers(VisionMeasurement& measurement);
 
-    /** @brief Remove a landmark from the EqF states based on its index in the EqF state vector.
-     *
-     * @param idx The index of the landmark to remove.
-     */
-    void removeLandmarkByIndex(const int& idx);
-
-    /** @brief Remove a landmark from the EqF states based on its id number.
-     *
-     * @param id The id number of the landmark to remove.
-     */
-    void removeLandmarkById(const int& id);
-
-    /** @brief Remove all landmarks with depth values that are too small or too large.
-     */
-    void removeInvalidLandmarks();
-
     /** @brief Compute the median of the depth values of all the landmarks.
      */
     double getMedianSceneDepth() const;
-
-    /** @brief Get the marginalised covariance associated with a landmark by its id number
-     *
-     * @param id The id number of the landmark with the desired covariance.
-     */
-    Eigen::Matrix3d getLandmarkCovById(const int& id) const;
-
-    /** @brief Get the covariance associated with the measurement of a particular value.
-     *
-     * @param id The id number to which the measurement covariance is associated.
-     * @param y The real measurement of pixel coordinates associated with this id number.
-     * @param camPtr The camera model for the camera used to make the measurement y.
-     *
-     * The availability of the true measurement y allows us to use an equivariant output approximation here.
-     */
-    Eigen::Matrix2d getOutputCovById(const int& id, const Eigen::Vector2d& y, const GIFT::GICameraPtr& camPtr) const;
 
   public:
     struct Settings;
@@ -141,11 +90,19 @@ class VIOFilter {
 
     VIOFilter() = default;
 
-    /** @brief Create the EqF using the given settings.
+    /** @brief Create the filter using the given settings.
      *
      * @param settings The initial settings to use.
      */
     VIOFilter(const VIOFilter::Settings& settings);
+
+    /** @brief Create the filter with given initial condition
+     *
+     * @param xi0 The initial state estimate.
+     * @param settings The settings to use in noise matrices.
+     * @param time The initial time of the filter
+     */
+    VIOFilter(const VIOState& xi0, const VIOFilter::Settings& settings, const double& time = 0.0);
 
     /** @brief Initialise the EqF states using an IMU velocity measurement.
      *
@@ -164,6 +121,10 @@ class VIOFilter {
      * set to its default values.
      */
     void setState(const VIOState& xi);
+
+    void setLandmarks(const std::vector<Landmark>& cameraLandmarks);
+
+    void augmentLandmarkStates(const std::vector<int>& newIds, const VIOState& providedState);
 
     //-------------------------
     // Input
@@ -216,6 +177,8 @@ class VIOFilter {
      * This is computed by applying the group action with the observer state X to the fixed origin configuration xi0.
      */
     VIOState stateEstimate() const;
+
+    const VIO_eqf& viewEqFState() const;
 
     /** @brief Write an the filter states to a file.
      *
