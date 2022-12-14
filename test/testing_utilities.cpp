@@ -199,8 +199,8 @@ void assertMatrixEquality(const Eigen::MatrixXd& M1, const Eigen::MatrixXd& M2, 
     // Check each entry
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < m; ++j) {
-            EXPECT_NEAR(M1(i, j), M2(i, j), std::max(h, 5e3 * h * abs(M1(i, j)))) << "Entry (" << i << ", " << j << ")";
-            if (abs(M1(i, j) - M2(i, j)) > std::max(h, 5e3 * h * abs(M1(i, j)))) {
+            EXPECT_NEAR(M1(i, j), M2(i, j), std::max(h, h * 1e1 * abs(M1(i, j)))) << "Entry (" << i << ", " << j << ")";
+            if (abs(M1(i, j) - M2(i, j)) > std::max(h, h * 1e1 * abs(M1(i, j)))) {
                 errorMat(i, j) = 1;
             } else {
                 errorMat(i, j) = 0;
@@ -209,5 +209,6 @@ void assertMatrixEquality(const Eigen::MatrixXd& M1, const Eigen::MatrixXd& M2, 
     }
     if ((errorMat.array() == 1).any()) {
         std::cout << "Error matrix:\n" << errorMat << std::endl;
+        std::cout << "Error scale matrix:\n" << (M1 - M2).cwiseProduct(errorMat.cast<double>()) << std::endl;
     }
 }

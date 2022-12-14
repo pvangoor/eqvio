@@ -16,9 +16,9 @@
 */
 
 #include "eigen3/Eigen/Dense"
-#include "eqvio/VIOGroup.h"
-#include "eqvio/VIOState.h"
-#include "eqvio/VisionMeasurement.h"
+#include "eqvio/mathematical/VIOGroup.h"
+#include "eqvio/mathematical/VIOState.h"
+#include "eqvio/mathematical/VisionMeasurement.h"
 #include "testing_utilities.h"
 #include "gtest/gtest.h"
 

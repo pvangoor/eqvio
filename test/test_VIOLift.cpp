@@ -16,9 +16,9 @@
 */
 
 #include "eigen3/Eigen/Dense"
-#include "eqvio/EqFMatrices.h"
-#include "eqvio/VIOGroup.h"
-#include "eqvio/VIOState.h"
+#include "eqvio/mathematical/EqFMatrices.h"
+#include "eqvio/mathematical/VIOGroup.h"
+#include "eqvio/mathematical/VIOState.h"
 #include "testing_utilities.h"
 #include "gtest/gtest.h"
 
@@ -106,7 +106,11 @@ void discreteInnovationLift_test(const EqFCoordinateSuite& coordinateSuite) {
             return reprojectedInnovation;
         };
 
-        testDifferential(reprojectionFunc, VectorXd::Zero(xi0.Dim()), MatrixXd::Identity(xi0.Dim(), xi0.Dim()));
+        // Check that the reprojection function yields identity
+        for (int j = 0; j < xi0.Dim(); ++j) {
+            const Eigen::VectorXd ej = Eigen::VectorXd::Unit(xi0.Dim(), j);
+            assertMatrixEquality(ej, reprojectionFunc(ej));
+        }
     }
 }
 
