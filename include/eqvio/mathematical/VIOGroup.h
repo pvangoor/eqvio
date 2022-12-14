@@ -17,8 +17,8 @@
 
 #pragma once
 
-#include "eqvio/VIOState.h"
 #include "eqvio/csv/CSVReader.h"
+#include "eqvio/mathematical/VIOState.h"
 #include "liepp/SE3.h"
 #include "liepp/SOT3.h"
 

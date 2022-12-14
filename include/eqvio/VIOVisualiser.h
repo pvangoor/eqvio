@@ -19,7 +19,7 @@
 
 #include "GIFT/Feature.h"
 #include "Plotter.h"
-#include "eqvio/VIOState.h"
+#include "eqvio/mathematical/VIOState.h"
 
 /** @brief A class to handle visualisation of VIO state
  *

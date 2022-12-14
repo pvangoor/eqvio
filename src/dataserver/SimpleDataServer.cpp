@@ -40,8 +40,8 @@ IMUVelocity SimpleDataServer::getIMU() {
     return retIMUData;
 }
 
-SimpleDataServer::SimpleDataServer(std::unique_ptr<DatasetReaderBase>&& datasetReader)
-    : DataServerBase(std::move(datasetReader)) {
+SimpleDataServer::SimpleDataServer(std::unique_ptr<DatasetReaderBase>&& datasetReader, const YAML::Node& simSettings)
+    : DataServerBase(std::move(datasetReader), simSettings) {
     nextImageData = datasetReaderPtr->nextImage();
     nextIMUData = datasetReaderPtr->nextIMU();
 }

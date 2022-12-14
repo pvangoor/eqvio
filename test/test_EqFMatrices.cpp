@@ -16,7 +16,7 @@
 */
 
 #include "eigen3/Eigen/Dense"
-#include "eqvio/EqFMatrices.h"
+#include "eqvio/mathematical/EqFMatrices.h"
 #include "testing_utilities.h"
 #include "gtest/gtest.h"
 

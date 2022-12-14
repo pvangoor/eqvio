@@ -15,7 +15,7 @@
     along with EqVIO.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "eqvio/IMUVelocity.h"
+#include "eqvio/mathematical/IMUVelocity.h"
 
 IMUVelocity IMUVelocity::Zero() {
     IMUVelocity result;

@@ -15,7 +15,7 @@
     along with EqVIO.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "eqvio/EqFMatrices.h"
+#include "eqvio/mathematical/EqFMatrices.h"
 
 using namespace Eigen;
 using namespace std;
@@ -33,7 +33,7 @@ VIOGroup liftInnovationDiscrete_normal(const Eigen::VectorXd& totalInnovation, c
 const EqFCoordinateSuite EqFCoordinateSuite_normal{VIOChart_normal,        EqFStateMatrixA_normal,
                                                    EqFInputMatrixB_normal, EqFoutputMatrixCiStar_normal,
                                                    liftInnovation_normal,  liftInnovationDiscrete_normal};
- 
+
 Eigen::MatrixXd EqFStateMatrixA_normal(const VIOGroup& X, const VIOState& xi0, const IMUVelocity& imuVel) {
     const MatrixXd& M = coordinateDifferential_normal_euclid(xi0);
     return M * EqFCoordinateSuite_euclid.stateMatrixA(X, xi0, imuVel) * M.inverse();
@@ -55,7 +55,7 @@ VIOGroup liftInnovationDiscrete_normal(const Eigen::VectorXd& totalInnovation, c
 }
 
 Eigen::Matrix<double, 2, 3> EqFoutputMatrixCiStar_normal(
-    const Vector3d& q0, const SOT3d& QHat, const GIFT::GICameraPtr& camPtr, const Eigen::Vector2d& y) {
+    const Vector3d& q0, const SOT3d& QHat, const GIFT::GICameraPtr& camPtr, [[maybe_unused]] const Eigen::Vector2d& y) {
     const Vector3d& y0 = q0.normalized();
     const Vector3d& yHat = QHat.R.inverse() * y0;
     Eigen::Matrix<double, 2, 3> C0i = Eigen::Matrix<double, 2, 3>::Zero();

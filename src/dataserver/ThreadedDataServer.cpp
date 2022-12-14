@@ -65,8 +65,9 @@ double ThreadedDataServer::nextTime() const {
     return std::nan("");
 }
 
-ThreadedDataServer::ThreadedDataServer(std::unique_ptr<DatasetReaderBase>&& datasetReader)
-    : DataServerBase(std::move(datasetReader)) {
+ThreadedDataServer::ThreadedDataServer(
+    std::unique_ptr<DatasetReaderBase>&& datasetReader, const YAML::Node& simSettings)
+    : DataServerBase(std::move(datasetReader), simSettings) {
     ioThread = std::thread(&ThreadedDataServer::fillQueues, this);
 }
 

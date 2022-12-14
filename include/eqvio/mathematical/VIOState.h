@@ -20,10 +20,10 @@
 #include "liepp/SE3.h"
 
 #include "eigen3/Eigen/Eigen"
-#include "eqvio/Geometry.h"
-#include "eqvio/IMUVelocity.h"
-#include "eqvio/VisionMeasurement.h"
 #include "eqvio/csv/CSVReader.h"
+#include "eqvio/mathematical/Geometry.h"
+#include "eqvio/mathematical/IMUVelocity.h"
+#include "eqvio/mathematical/VisionMeasurement.h"
 
 #include <functional>
 #include <memory>
@@ -43,6 +43,13 @@ struct Landmark {
     int id = -1;       ///< The landmark's id number
 
     constexpr static int CompDim = 3; ///< The dimension of the space of landmarks.
+};
+
+/** @brief A struct with a time stamp and SE(3) pose.
+ */
+struct StampedPose {
+    double t;         ///< The time stamp of the pose data
+    liepp::SE3d pose; ///< The pose data as an SE(3) element
 };
 
 /** @brief The states of the sensors of the VIO system.

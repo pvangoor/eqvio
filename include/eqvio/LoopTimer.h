@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include "eqvio/aofstream.h"
+#include "eqvio/common/aofstream.h"
 
 #include <chrono>
 #include <map>

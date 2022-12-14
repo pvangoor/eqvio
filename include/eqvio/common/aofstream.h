@@ -58,9 +58,11 @@ class aofstream {
     void flushStreamToFile() {
         std::chrono::steady_clock::time_point lastFlush = std::chrono::steady_clock::now();
         while (true) {
-            std::unique_lock lck(streamMutex);
-            buffer_cv.wait(lck, [this]() { return !(streamBuffer.rdbuf()->in_avail() == 0) || destructorCalled; });
-            outputFile << streamBuffer.rdbuf();
+            {
+                std::unique_lock lck(streamMutex);
+                buffer_cv.wait(lck, [this]() { return !(streamBuffer.rdbuf()->in_avail() == 0) || destructorCalled; });
+                outputFile << streamBuffer.rdbuf();
+            }
 
             // Flush every 5 seconds
             if ((std::chrono::steady_clock::now() - lastFlush) > std::chrono::duration<double>(5.0)) {

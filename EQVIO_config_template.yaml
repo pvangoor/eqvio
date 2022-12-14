@@ -4,6 +4,7 @@ eqf:
     position: 1.0
     velocity: 1.0
     point: 5000.0
+    pointDepth: -1.0
     cameraAttitude: 0.1
     cameraPosition: 0.1
     biasGyr: 1.0
@@ -46,6 +47,8 @@ eqf:
     useMedianDepth: true
     useFeaturePredictions: false
     useEquivariantOutput: true
+    removeLostLandmarks: true
+    useDiscreteStateMatrix: false
 GIFT:
   intrinsicsFile: intrinsics_example.yaml
   maxFeatures: 30

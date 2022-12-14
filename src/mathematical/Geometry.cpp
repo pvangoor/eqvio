@@ -15,7 +15,12 @@
     along with EqVIO.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "eqvio/Geometry.h"
+#include "eqvio/mathematical/Geometry.h"
+#include "eigen3/Eigen/Cholesky"
+#include <random>
+
+static std::random_device rd;
+static std::mt19937 rng = std::mt19937(rd());
 
 Eigen::MatrixXd
 numericalDifferential(std::function<Eigen::VectorXd(const Eigen::VectorXd&)> f, const Eigen::VectorXd& x, double h) {
@@ -28,4 +33,37 @@ numericalDifferential(std::function<Eigen::VectorXd(const Eigen::VectorXd&)> f, 
         Df.col(j) = (f(x + h * ej) - f(x - h * ej)) / (2 * h);
     }
     return Df;
+}
+
+Eigen::VectorXd sampleGaussianDistribution(const Eigen::MatrixXd& covariance) {
+    std::normal_distribution<> dist{0, 1};
+    const int n = covariance.rows();
+    Eigen::VectorXd x(n);
+
+    for (int i = 0; i < n; ++i) {
+        x(i) = dist(rng);
+    }
+
+    Eigen::MatrixXd L = covariance.llt().matrixL();
+    Eigen::VectorXd sample = L * x;
+
+    return sample;
+}
+
+std::vector<Eigen::VectorXd> sampleGaussianDistribution(const Eigen::MatrixXd& covariance, const size_t& numSamples) {
+    std::normal_distribution<> dist{0, 1};
+
+    const int n = covariance.rows();
+    Eigen::MatrixXd L = covariance.llt().matrixL();
+
+    std::vector<Eigen::VectorXd> samples(numSamples);
+    for (Eigen::VectorXd& sample : samples) {
+        Eigen::VectorXd x(n);
+        for (int i = 0; i < n; ++i) {
+            x(i) = dist(rng);
+        }
+        sample = L * x;
+    }
+
+    return samples;
 }

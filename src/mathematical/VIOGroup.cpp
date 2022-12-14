@@ -15,7 +15,7 @@
     along with EqVIO.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "eqvio/VIOGroup.h"
+#include "eqvio/mathematical/VIOGroup.h"
 #include "liepp/SEn3.h"
 
 using namespace Eigen;
@@ -236,9 +236,13 @@ VIOAlgebra VIOAlgebra::operator-(const VIOAlgebra& other) const { return *this +
     lift.beta = dt * (Matrix<double, 6, 1>() << velocity.gyrBiasVel, velocity.accBiasVel).finished();
 
     // Set the SE(3) velocity
-    Matrix<double, 6, 1> AVel;
-    AVel << v_est.gyr, sensor.velocity + 0.5 * dt * (v_est.acc - sensor.gravityDir() * GRAVITY_CONSTANT);
-    lift.A = SE3d::exp(dt * AVel);
+    // Matrix<double, 6, 1> AVel;
+    // AVel << v_est.gyr, sensor.velocity + 0.5 * dt * (v_est.acc - sensor.gravityDir() * GRAVITY_CONSTANT);
+    // lift.A = SE3d::exp(dt * AVel);
+    lift.A.R = SO3d::exp(dt * v_est.gyr);
+    lift.A.x = dt * (sensor.pose.R * sensor.velocity) +
+               0.5 * dt * dt * (sensor.pose.R * v_est.acc + Vector3d(0, 0, -GRAVITY_CONSTANT));
+    lift.A.x = sensor.pose.R.inverse() * lift.A.x;
 
     lift.B = sensor.cameraOffset.inverse() * lift.A * sensor.cameraOffset;
 
@@ -248,8 +252,7 @@ VIOAlgebra VIOAlgebra::operator-(const VIOAlgebra& other) const { return *this +
 
     // Set the landmark transform velocities
     const int N = state.cameraLandmarks.size();
-    const se3d U_C = sensor.cameraOffset.inverse().Adjoint() * AVel;
-    const SE3d cameraPoseChangeInv = SE3d::exp(-dt * U_C);
+    const SE3d cameraPoseChangeInv = sensor.cameraOffset.inverse() * lift.A.inverse() * sensor.cameraOffset;
     lift.Q.resize(N);
     lift.id.resize(N);
     for (int i = 0; i < N; ++i) {

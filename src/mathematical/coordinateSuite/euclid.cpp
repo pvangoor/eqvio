@@ -15,7 +15,7 @@
     along with EqVIO.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "eqvio/EqFMatrices.h"
+#include "eqvio/mathematical/EqFMatrices.h"
 
 using namespace Eigen;
 using namespace std;

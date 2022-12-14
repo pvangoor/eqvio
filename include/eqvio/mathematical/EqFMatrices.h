@@ -17,10 +17,14 @@
 
 #pragma once
 
-#include "eqvio/VIOGroup.h"
+#include "eqvio/mathematical/VIOGroup.h"
 #include <functional>
 
 /** @file */
+
+/** @brief The local coordinate charts available to the EqF
+ */
+enum class CoordinateChoice { Euclidean, InvDepth, Normal };
 
 /** @brief The suite of functions associated with a choice of coordinates for the EqF.
  *
@@ -46,6 +50,9 @@ struct EqFCoordinateSuite {
     /// The output matrix  with equivariance \f$ C_t^\star \f$ or without \f$ C_t \f$.
     const Eigen::MatrixXd outputMatrixC(
         const VIOState& xi0, const VIOGroup& X, const VisionMeasurement& y, const bool useEquivariance = true) const;
+    /// The discrete EqF state transition matrix
+    Eigen::MatrixXd
+    stateMatrixADiscrete(const VIOGroup& X, const VIOState& xi0, const IMUVelocity& imuVel, const double& dt) const;
 
     /// The standard (not equivariant) output matrix block \f$ C_i \f$.
     const Eigen::Matrix<double, 2, 3>
@@ -65,3 +72,19 @@ extern const EqFCoordinateSuite EqFCoordinateSuite_euclid;
 extern const EqFCoordinateSuite EqFCoordinateSuite_invdepth;
 /// A suite of functions for the EqF using Normal coordinates
 extern const EqFCoordinateSuite EqFCoordinateSuite_normal;
+
+/** @brief Provide coordinates based on the coordinate choice
+ *
+ * @param coordinateChoice The chosen coordinates
+ * @return A pointer to the coordinate implementation
+ */
+inline const EqFCoordinateSuite* getCoordinates(const CoordinateChoice& coordinateChoice) {
+    if (coordinateChoice == CoordinateChoice::Euclidean) {
+        return &EqFCoordinateSuite_euclid;
+    } else if (coordinateChoice == CoordinateChoice::InvDepth) {
+        return &EqFCoordinateSuite_invdepth;
+    } else if (coordinateChoice == CoordinateChoice::Normal) {
+        return &EqFCoordinateSuite_normal;
+    }
+    return nullptr;
+}

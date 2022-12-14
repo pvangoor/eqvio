@@ -15,11 +15,30 @@
     along with EqVIO.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "eqvio/EqFMatrices.h"
+#include "eqvio/mathematical/EqFMatrices.h"
 
 using namespace Eigen;
 using namespace std;
 using namespace liepp;
+
+Eigen::MatrixXd EqFCoordinateSuite::stateMatrixADiscrete(
+    const VIOGroup& X, const VIOState& xi0, const IMUVelocity& imuVel, const double& dt) const {
+    // Compute using numerical differentiation
+
+    auto a0Discrete = [&](const VectorXd& epsilon) {
+        const auto xi_e = stateChart.inv(epsilon, xi0);
+        const auto xi_hat = stateGroupAction(X, xi0);
+        const auto xi = stateGroupAction(X, xi_e);
+        const auto LambdaTilde =
+            liftVelocityDiscrete(xi, imuVel, dt) * liftVelocityDiscrete(xi_hat, imuVel, dt).inverse();
+        const auto xi_e1 = stateGroupAction(X * LambdaTilde * X.inverse(), xi_e);
+        const VectorXd epsilon1 = stateChart(xi_e1, xi0);
+        return epsilon1;
+    };
+
+    const auto A0tD = numericalDifferential(a0Discrete, Eigen::VectorXd::Zero(xi0.Dim()));
+    return A0tD;
+}
 
 const Eigen::MatrixXd EqFCoordinateSuite::outputMatrixC(
     const VIOState& xi0, const VIOGroup& X, const VisionMeasurement& y, const bool useEquivariance) const {

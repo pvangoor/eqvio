@@ -23,6 +23,7 @@
 #include "eqvio/dataserver/UZHFPVDatasetReader.h"
 
 #include "eqvio/dataserver/SimpleDataServer.h"
+#include "eqvio/dataserver/SimulationDataServer.h"
 #include "eqvio/dataserver/ThreadedDataServer.h"
 
 #if EQVIO_BUILD_ROSBAG
@@ -30,17 +31,12 @@
 #include "eqvio/dataserver/RosbagDatasetReader.h"
 #endif
 
-inline std::unique_ptr<DatasetReaderBase> createDatasetReader(
-    const std::string& dataMode, const std::string& datasetFileName, const double& cameraLag = 0.0,
-    const YAML::Node& simulatorConfig = YAML::Node()) {
+inline std::unique_ptr<DatasetReaderBase>
+createDatasetReader(const std::string& dataMode, const std::string& datasetFileName, const double& cameraLag = 0.0) {
     std::unique_ptr<DatasetReaderBase> datasetReader;
 
     if (dataMode == "asl") {
-        if (simulatorConfig) {
-            datasetReader = std::make_unique<ASLDatasetReader>(datasetFileName, simulatorConfig);
-        } else {
-            datasetReader = std::make_unique<ASLDatasetReader>(datasetFileName);
-        }
+        datasetReader = std::make_unique<ASLDatasetReader>(datasetFileName);
     } else if (dataMode == "anu") {
         datasetReader = std::make_unique<APDatasetReader>(datasetFileName);
     } else if (dataMode == "uzhfpv") {

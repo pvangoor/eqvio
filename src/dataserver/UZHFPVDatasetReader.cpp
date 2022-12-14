@@ -20,7 +20,7 @@
 #include <filesystem>
 #include <iostream>
 
-UZHFPVDatasetReader::UZHFPVDatasetReader(const std::string& datasetMainDir, const YAML::Node& simSettings) {
+UZHFPVDatasetReader::UZHFPVDatasetReader(const std::string& datasetMainDir) {
     // Set up required structures
     // --------------------------
 
@@ -28,17 +28,11 @@ UZHFPVDatasetReader::UZHFPVDatasetReader(const std::string& datasetMainDir, cons
 
     // Set up the data iterator for IMU
     IMUCSVFile = CSVFile(datasetMainDir + "imu.txt", ' ');
-    IMUCSVFile.skipLine(); // skip the header
+    IMUCSVFile.nextLine(); // skip the header
 
     // Read the image data file
     ImageCSVFile = CSVFile(datasetMainDir + "left_images.txt", ' ');
-    ImageCSVFile.skipLine(); // skip the header
-
-    // Get the ground truth
-    const std::string groundtruthFileName = datasetMainDir + "groundtruth.txt";
-    if (std::filesystem::exists(groundtruthFileName)) {
-        // simulator = VIOSimulator(groundtruthFileName, simSettings, 1.0, 1, ' ');
-    }
+    ImageCSVFile.nextLine(); // skip the header
 
     // Read the camera file
     std::string cameraFileName =
@@ -118,4 +112,29 @@ void UZHFPVDatasetReader::readCamera(const std::string& cameraFileName) {
     }
     // The UZH FPV dataset reports the pose of the IMU w.r.t. the camera, so it needs to be inverted.
     cameraExtrinsics = std::make_unique<liepp::SE3d>(extrinsics_matrix.inverse());
+}
+
+std::vector<StampedPose> UZHFPVDatasetReader::groundtruth() {
+    const std::string groundtruthFileName = baseDir + "groundtruth.txt";
+
+    assert(std::filesystem::exists(groundtruthFileName));
+    std::ifstream poseFile = std::ifstream(groundtruthFileName);
+    CSVReader poseFileIter(poseFile, ' ');
+    ++poseFileIter; // skip header
+
+    std::vector<StampedPose> poses;
+
+    double prevPoseTime = -1e8;
+    for (CSVLine row : poseFileIter) {
+
+        StampedPose pose;
+        row >> pose.t >> pose.pose;
+        if (pose.t > prevPoseTime + 1e-8) {
+            // Avoid poses with the same timestamp.
+            poses.emplace_back(pose);
+            prevPoseTime = pose.t;
+        }
+    }
+
+    return poses;
 }
