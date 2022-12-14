@@ -109,7 +109,7 @@ int main(int argc, char const* argv[]) {
 
     std::unique_ptr<DataServerBase> dataServer;
     dataServer = std::make_unique<ThreadedDataServer>(
-        createDatasetReader(program.get("--mode"), program.get("dataset"), cameraLag, eqvioConfig["sim"]));
+        createDatasetReader(program.get("--mode"), program.get("dataset"), cameraLag), eqvioConfig["sim"]);
 
     // Read the camera file if provided
     if (program.is_used("--camera")) {

@@ -17,10 +17,21 @@
 
 #include "eqvio/dataserver/DataServerBase.h"
 
-DataServerBase::DataServerBase(std::unique_ptr<DatasetReaderBase>&& datasetReader)
-    : datasetReaderPtr(std::move(datasetReader)) {}
+DataServerBase::DataServerBase(std::unique_ptr<DatasetReaderBase>&& datasetReader, const YAML::Node& simSettings)
+    : datasetReaderPtr(std::move(datasetReader)) {
+    simulator = VIOSimulator(datasetReaderPtr->groundtruth(), datasetReaderPtr->camera, simSettings);
+    if (cameraExtrinsics()) {
+        simulator.cameraOffset = *cameraExtrinsics();
+    }
+}
 
-void DataServerBase::readCamera(const std::string& cameraFileName) { datasetReaderPtr->readCamera(cameraFileName); }
+void DataServerBase::readCamera(const std::string& cameraFileName) {
+    datasetReaderPtr->readCamera(cameraFileName);
+    simulator.cameraPtr = datasetReaderPtr->camera;
+    if (cameraExtrinsics()) {
+        simulator.cameraOffset = *cameraExtrinsics();
+    }
+}
 
 std::shared_ptr<liepp::SE3d> DataServerBase::cameraExtrinsics() const { return datasetReaderPtr->cameraExtrinsics; }
 
@@ -28,12 +39,18 @@ GIFT::GICameraPtr DataServerBase::camera() const { return datasetReaderPtr->came
 
 VisionMeasurement DataServerBase::getSimVision() {
     const StampedImage image = getImage();
-    assert(datasetReaderPtr->simulator);
-    return datasetReaderPtr->simulator->getVision(image.stamp);
+    return simulator.getVision(image.stamp);
 }
 
 IMUVelocity DataServerBase::getSimIMU() {
     const IMUVelocity imu = getIMU();
-    assert(datasetReaderPtr->simulator);
-    return datasetReaderPtr->simulator->getIMU(imu.stamp);
+    return simulator.getIMU(imu.stamp);
+}
+
+std::shared_ptr<liepp::SE3d> DataServerBase::groundTruthPose(const double stamp) const {
+    if (simulator.viewPoses().empty()) {
+        return nullptr;
+    } else {
+        return std::make_shared<liepp::SE3d>(simulator.getFullState(stamp, false).sensor.pose);
+    }
 }

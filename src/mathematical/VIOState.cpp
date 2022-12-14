@@ -15,7 +15,7 @@
     along with EqVIO.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "eqvio/VIOState.h"
+#include "eqvio/mathematical/VIOState.h"
 #include "liepp/SEn3.h"
 #include <cmath>
 
@@ -37,18 +37,20 @@ VIOState integrateSystemFunction(const VIOState& state, const IMUVelocity& veloc
     const VIOSensorState& sensor = state.sensor;
     VIOSensorState& newSensor = newState.sensor;
     SE3d::VectorDS poseVel;
-    poseVel << v_est.gyr,
-        sensor.velocity + 0.5 * dt * (v_est.acc + sensor.pose.R.inverse() * Vector3d(0, 0, -GRAVITY_CONSTANT));
+    liepp::SE3d poseChange;
+    poseChange.R = SO3d::exp(dt * v_est.gyr);
+    poseChange.x = dt * (sensor.pose.R * sensor.velocity) +
+                   0.5 * dt * dt * (sensor.pose.R * v_est.acc + Vector3d(0, 0, -GRAVITY_CONSTANT));
+    poseChange.x = sensor.pose.R.inverse() * poseChange.x;
 
-    newSensor.pose = sensor.pose * SE3d::exp(dt * poseVel);
+    newSensor.pose = sensor.pose * poseChange;
 
     // Integrate the velocity
     Vector3d inertialVelocityDiff = sensor.pose.R.asMatrix() * v_est.acc + Vector3d(0, 0, -GRAVITY_CONSTANT);
     newSensor.velocity = newSensor.pose.R.inverse() * (sensor.pose.R * sensor.velocity + dt * inertialVelocityDiff);
 
     // Landmarks are transformed in the body fixed frame
-    const SE3d::VectorDS cameraPoseVel = sensor.cameraOffset.inverse().Adjoint() * poseVel;
-    const SE3d cameraPoseChangeInv = SE3d::exp(-dt * cameraPoseVel);
+    const SE3d cameraPoseChangeInv = sensor.cameraOffset.inverse() * poseChange.inverse() * sensor.cameraOffset;
     newState.cameraLandmarks.resize(state.cameraLandmarks.size());
     transform(
         state.cameraLandmarks.begin(), state.cameraLandmarks.end(), newState.cameraLandmarks.begin(),
@@ -121,12 +123,14 @@ const CoordinateChart<VIOSensorState> sensorChart_std{
 const CoordinateChart<VIOSensorState> sensorChart_normal{
     [](const VIOSensorState& Xi, const VIOSensorState& Xi0) {
         SE3d A = Xi0.pose.inverse() * Xi.pose;
-        Vector3d w = Xi0.velocity - A.R * Xi.velocity;
+        Vector3d v_xi0 = Xi0.pose.R * Xi0.velocity;
+        Vector3d v_xi = Xi.pose.R * Xi.velocity;
+        Vector3d v_A = Xi0.pose.R.inverse() * (v_xi - v_xi0);
         SE3d B = Xi0.cameraOffset.inverse() * A * Xi.cameraOffset;
 
         Vector<double, VIOSensorState::CompDim> eps;
         eps.segment<6>(0) = Xi.inputBias - Xi0.inputBias;
-        eps.segment<9>(6) = SE23d::log(SE23d(A.R, {A.x, w}));
+        eps.segment<9>(6) = SE23d::log(SE23d(A.R, {A.x, v_A}));
         eps.segment<6>(15) = SE3d::log(B);
 
         return eps;
@@ -135,12 +139,13 @@ const CoordinateChart<VIOSensorState> sensorChart_normal{
         SE23d X = SE23d::exp(eps.segment<9>(6));
         SE3d B = SE3d::exp(eps.segment<6>(15));
         SE3d A = SE3d(X.R, X.x[0]);
-        Vector3d w = X.x[1];
+        Vector3d v_A = X.x[1];
 
         VIOSensorState Xi;
         Xi.inputBias = Xi0.inputBias + eps.segment<6>(0);
         Xi.pose = Xi0.pose * A;
-        Xi.velocity = A.R.inverse() * (Xi0.velocity - w);
+        Vector3d v_xi0 = Xi0.pose.R * Xi0.velocity;
+        Xi.velocity = Xi.pose.R.inverse() * (v_xi0 + Xi0.pose.R * v_A);
         Xi.cameraOffset = A.inverse() * Xi0.cameraOffset * B;
         return Xi;
     }};

@@ -15,8 +15,8 @@
     along with EqVIO.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "eqvio/VisionMeasurement.h"
-#include "eqvio/VIOState.h"
+#include "eqvio/mathematical/VisionMeasurement.h"
+#include "eqvio/mathematical/VIOState.h"
 
 using namespace std;
 using namespace Eigen;
@@ -51,7 +51,7 @@ CSVLine& operator>>(CSVLine& line, VisionMeasurement& vision) {
 CSVLine& operator<<(CSVLine& line, const VisionMeasurement& vision) {
     line << vision.stamp;
     line << vision.camCoordinates.size();
-    for (const pair<int, Vector2d>& cc : vision.camCoordinates) {
+    for (const pair<const int, Vector2d>& cc : vision.camCoordinates) {
         line << cc.first << cc.second;
     }
     return line;
@@ -59,7 +59,7 @@ CSVLine& operator<<(CSVLine& line, const VisionMeasurement& vision) {
 
 VisionMeasurement operator-(const VisionMeasurement& y1, const VisionMeasurement& y2) {
     VisionMeasurement yDiff;
-    for (const pair<int, Vector2d>& cc1 : y1.camCoordinates) {
+    for (const pair<const int, Vector2d>& cc1 : y1.camCoordinates) {
         const auto it2 = y2.camCoordinates.find(cc1.first);
         if (it2 != y2.camCoordinates.end()) {
             yDiff.camCoordinates[cc1.first] = cc1.second - it2->second;
@@ -74,6 +74,17 @@ VisionMeasurement::operator Eigen::VectorXd() const {
     Eigen::VectorXd result = Eigen::VectorXd(2 * ids.size());
     for (size_t i = 0; i < ids.size(); ++i) {
         result.segment<2>(2 * i) = camCoordinates.at(ids[i]);
+    }
+    return result;
+}
+
+VisionMeasurement operator+(const VisionMeasurement& y, const Eigen::VectorXd& eta) {
+    assert(eta.rows() == 2 * y.camCoordinates.size());
+    VisionMeasurement result = y;
+    size_t i = 0;
+    for (auto& pixelCoords : result.camCoordinates) {
+        pixelCoords.second += eta.segment<2>(2 * i);
+        ++i;
     }
     return result;
 }
