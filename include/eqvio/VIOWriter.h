@@ -18,8 +18,9 @@
 #pragma once
 
 #include "eqvio/LoopTimer.h"
-#include "eqvio/VIOState.h"
-#include "eqvio/aofstream.h"
+#include "eqvio/common/aofstream.h"
+#include "eqvio/mathematical/VIOState.h"
+#include "eqvio/mathematical/VIO_eqf.h"
 
 /** @brief A class to handle writing output for the VIO system
  *
@@ -29,15 +30,23 @@
  */
 class VIOWriter {
   protected:
+    std::string outputDir;
+
     aofstream IMUStateFile; ///< The file for recording the IMU states
     aofstream cameraFile;   ///< The file for recording the camera offset
     aofstream biasFile;     ///< The file for recording the IMU biases
     aofstream pointsFile;   ///< The file for recording the landmark points
 
+    aofstream landmarkErrorFile;     ///< The file for recording landmark depth errors
+    aofstream trueStateFile;         ///< The file for recording the true states (from simulation)
+    aofstream neesFile;              ///< The file for recording NEES
+    aofstream poseConsistencyFile;   ///< The file for recording pose consistency
+    aofstream cameraConsistencyFile; ///< The file for recording camera consistency
+    aofstream biasConsistencyFile;   ///< The file for recording bias consistency
+
     aofstream featuresFile; ///< The file for recording the image features
 
-    aofstream timingFile;                   ///< The file for recording processing times
-    bool timingFileHeaderIsWritten = false; ///< True once the header of the timing file is written.
+    aofstream timingFile; ///< The file for recording processing times
 
   public:
     /** @brief Create a number of files in the output directory to record VIO data.
@@ -47,7 +56,7 @@ class VIOWriter {
      * This method creates the output directory if it does not already exist, and then creates output files for the VIO
      * data to be written to. It also creates header rows in each of the files to make them human-readable.
      */
-    VIOWriter(std::string outputDir);
+    VIOWriter(const std::string& outputDir);
 
     /** @brief Write the VIO states to the relevant files.
      *
@@ -73,4 +82,7 @@ class VIOWriter {
      * data file.
      */
     void writeTiming(const LoopTimer::LoopTimingData& timingData);
+
+    void writeLandmarkError(const double& stamp, const VIOState& trueState, const VIOState& estState);
+    void writeConsistency(const double& stamp, const VIOState& trueState, const VIO_eqf& filter);
 };

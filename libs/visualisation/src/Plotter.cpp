@@ -153,7 +153,7 @@ void Plotter::renderPoints() {
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45, ratio, 1, 1e8);
+    gluPerspective(45, ratio, 1e-3, 1e6);
 
     Vector3d eye = plotOrigin + zoom * Vector3d(
                                            cos(angleIncline) * cos(angleAzimuth), cos(angleIncline) * sin(angleAzimuth),

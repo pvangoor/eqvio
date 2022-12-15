@@ -19,7 +19,7 @@
 
 #include <filesystem>
 
-APDatasetReader::APDatasetReader(const std::string& datasetFileName, const YAML::Node& simSettings) {
+APDatasetReader::APDatasetReader(const std::string& datasetFileName) {
 
     const std::string datasetDir = datasetFileName.substr(0, datasetFileName.rfind("/")) + "/";
 
@@ -28,38 +28,33 @@ APDatasetReader::APDatasetReader(const std::string& datasetFileName, const YAML:
 
     // Set up the data iterator for IMU
     IMUCSVFile = CSVFile(datasetDir + "mav_imu.csv");
-    IMUCSVFile.skipLine(); // skip the header
+    IMUCSVFile.nextLine(); // skip the header
 
     // Read the image data
     cam_dir = datasetDir + "frames/";
     ImageCSVFile = CSVFile(datasetDir + "cam.csv");
-    ImageCSVFile.skipLine(); // skip the header
+    ImageCSVFile.nextLine(); // skip the header
 
-    // Set up simulator
     const std::string groundtruthFileName = datasetDir + "ground_truth.csv";
-    simulator = std::make_unique<VIOSimulator>(groundtruthFileName, simSettings);
 
     // Read the camera file
     readCamera(datasetDir + "undistort.yaml");
 }
 
 void APDatasetReader::readCamera(const std::string& cameraFileName) {
-    if (std::filesystem::exists(cameraFileName)) {
-        cv::FileStorage fs(cameraFileName, cv::FileStorage::READ);
-        cv::Mat K, dist;
+    assert(std::filesystem::exists(cameraFileName));
+    cv::FileStorage fs(cameraFileName, cv::FileStorage::READ);
+    cv::Mat K, dist;
 
-        fs["camera_matrix"] >> K;
-        fs["dist_coeffs"] >> dist;
+    fs["camera_matrix"] >> K;
+    fs["dist_coeffs"] >> dist;
 
-        std::array<double, 4> distVec;
-        for (int i = 0; i < dist.cols; ++i) {
-            distVec[i] = dist.at<double>(i);
-        }
-
-        camera = std::make_shared<GIFT::EquidistantCamera>(GIFT::EquidistantCamera(cv::Size(0, 0), K, distVec));
-    } else {
-        std::cout << "No camera file found at: " << cameraFileName << std::endl;
+    std::array<double, 4> distVec;
+    for (int i = 0; i < dist.cols; ++i) {
+        distVec[i] = dist.at<double>(i);
     }
+
+    camera = std::make_shared<GIFT::EquidistantCamera>(GIFT::EquidistantCamera(cv::Size(0, 0), K, distVec));
 }
 
 std::unique_ptr<IMUVelocity> APDatasetReader::nextIMU() {
@@ -94,4 +89,27 @@ std::unique_ptr<StampedImage> APDatasetReader::nextImage() {
     temp.stamp = rawStamp - cameraLag;
     temp.image = cv::imread(nextImageFname);
     return std::make_unique<StampedImage>(temp);
+}
+
+std::vector<StampedPose> APDatasetReader::groundtruth() {
+    // Find the poses file
+    assert(std::filesystem::exists(groundtruthFileName));
+    std::ifstream poseFile = std::ifstream(groundtruthFileName);
+    CSVReader poseFileIter(poseFile, ',');
+    ++poseFileIter; // skip header
+
+    std::vector<StampedPose> poses;
+
+    double prevPoseTime = -1e8;
+    for (CSVLine row : poseFileIter) {
+        StampedPose pose;
+        row >> pose.t >> pose.pose;
+        if (pose.t > prevPoseTime + 1e-8) {
+            // Avoid poses with the same timestamp.
+            poses.emplace_back(pose);
+            prevPoseTime = pose.t;
+        }
+    }
+
+    return poses;
 }

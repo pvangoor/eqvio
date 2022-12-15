@@ -32,10 +32,11 @@ class UZHFPVDatasetReader : public DatasetReaderBase {
     CSVFile ImageCSVFile; ///< The CSV file containing image stamps and relative file names.
 
   public:
-    virtual std::unique_ptr<StampedImage> nextImage();
-    virtual std::unique_ptr<IMUVelocity> nextIMU();
-    virtual void readCamera(const std::string& cameraFileName);
+    virtual std::unique_ptr<StampedImage> nextImage() override;
+    virtual std::unique_ptr<IMUVelocity> nextIMU() override;
+    virtual void readCamera(const std::string& cameraFileName) override;
+    virtual std::vector<StampedPose> groundtruth() override;
 
     /** @brief Construct the ASL dataset reader from the given dataset directory and simulation settings. */
-    UZHFPVDatasetReader(const std::string& datasetFileName, const YAML::Node& simSettings = YAML::Node());
+    UZHFPVDatasetReader(const std::string& datasetFileName);
 };

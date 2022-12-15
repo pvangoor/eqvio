@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "eqvio/VIOSimulator.h"
 #include "eqvio/dataserver/DatasetReaderBase.h"
 
 /** @brief The common interface of data servers.
@@ -28,6 +29,7 @@
 class DataServerBase {
   protected:
     std::unique_ptr<DatasetReaderBase> datasetReaderPtr; ///< The dataset reader providing measurements.
+    VIOSimulator simulator;                              ///< The simulator providing substitutions for measurements
 
   public:
     /** @brief Read a camera by using the dataset reader
@@ -40,6 +42,8 @@ class DataServerBase {
     virtual GIFT::GICameraPtr camera() const;
     /** @brief Get a pointer to the dataset camera extrinsics*/
     virtual std::shared_ptr<liepp::SE3d> cameraExtrinsics() const;
+
+    virtual std::shared_ptr<liepp::SE3d> groundTruthPose(const double stamp = -1) const;
 
     /** @brief Get the type of the next measurement in the dataset.*/
     virtual MeasurementType nextMeasurementType() const = 0;
@@ -58,7 +62,8 @@ class DataServerBase {
     /** @brief Construct a data server with a new dataset reader
      *
      * @param datasetReader An rvalue reference to a dataset reader unique_ptr.
+     * @param simSettings The settings to use for the simulator, in case simulated measurements are requested.
      */
-    DataServerBase(std::unique_ptr<DatasetReaderBase>&& datasetReader);
+    DataServerBase(std::unique_ptr<DatasetReaderBase>&& datasetReader, const YAML::Node& simSettings);
     DataServerBase() = default;
 };

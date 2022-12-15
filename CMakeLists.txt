@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(eqvio VERSION 1.0)
+project(eqvio VERSION 1.1)
 set(CMAKE_CXX_STANDARD 20)
 
 include(CheckCXXCompilerFlag)
@@ -52,12 +52,21 @@ if (EQVIO_USE_THREAD_SANTIZER)
     endif()
 endif()
 
-option( EQVIO_USE_UB_SANTIZER "Use the gcc undefined sanitizer option" OFF)
+option( EQVIO_USE_UB_SANTIZER "Use the gcc undefined behaviour sanitizer option" OFF)
 if (EQVIO_USE_UB_SANTIZER)
     CHECK_CXX_COMPILER_FLAG("-fsanitize=undefined" COMPILER_SUPPORTS_UB_SANITIZER)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined")
     if(NOT COMPILER_SUPPORTS_UB_SANITIZER)
         message("-fsanitize=undefined may not be supported. Trying anyway.")
+    endif()
+endif()
+
+option( EQVIO_USE_MEM_SANTIZER "Use the gcc address sanitizer option" OFF)
+if (EQVIO_USE_MEM_SANTIZER)
+    CHECK_CXX_COMPILER_FLAG("-fsanitize=address" COMPILER_SUPPORTS_MEM_SANITIZER)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+    if(NOT COMPILER_SUPPORTS_MEM_SANITIZER)
+        message("-fsanitize=address may not be supported. Trying anyway.")
     endif()
 endif()
 
@@ -75,8 +84,8 @@ if (${GIFT_FOUND})
     set(GIFT_INCLUDE_DIRS "GIFT::GIFT")
 else()
     message("GIFT is being used as a git submodule.")
-    execute_process(COMMAND git submodule update --init --recursive --remote ${PROJECT_SOURCE_DIR}/external/GIFT
-                    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    execute_process(COMMAND git submodule update --init --recursive --remote
+                    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/external/GIFT
                     RESULT_VARIABLE GIFT_SUBMOD_RESULT)
     if (${GIFT_SUBMOD_RESULT})
         message(FATAL_ERROR "GIFT was not found as a package and could not be included as a submodule.")
@@ -92,8 +101,8 @@ if (${argparse_FOUND})
     set(argparse_INCLUDE_DIRS "argparse::argparse")
 else()
     message("argparse is being used as a git submodule.")
-    execute_process(COMMAND git submodule update --init --recursive --remote ${PROJECT_SOURCE_DIR}/external/argparse
-                    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    execute_process(COMMAND git submodule update --init --recursive --remote
+                    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/external/argparse
                     RESULT_VARIABLE argparse_SUBMOD_RESULT)
     if (${argparse_SUBMOD_RESULT})
         message(FATAL_ERROR "argparse was not found as a package and could not be included as a submodule.")
@@ -103,10 +112,10 @@ endif()
 
 # Add LiePP
 message("LiePP is being used as a git submodule.")
-execute_process(COMMAND git submodule update --init --recursive --remote ${PROJECT_SOURCE_DIR}/external/LiePP
-                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+execute_process(COMMAND git submodule update --init --recursive --remote
+                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/external/LiePP
                 RESULT_VARIABLE LiePP_SUBMOD_RESULT)
-if (${LiePP_SUBMOD_RESULT})
+if (${argparse_SUBMOD_RESULT})
     message(FATAL_ERROR "LiePP could not be included as a submodule.")
 endif()
 set(LiePP_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/external/LiePP/include")
@@ -116,18 +125,22 @@ add_subdirectory(libs)
 
 # Add the include files
 set(EQVIO_HEADER_FILES
-    include/eqvio/VIOState.h
-    include/eqvio/IMUVelocity.h
-    include/eqvio/VIOGroup.h
-    include/eqvio/VIOFilter.h
-    include/eqvio/VIOFilterSettings.h
+    include/eqvio/common/safeConfig.h
+    include/eqvio/common/LieYaml.h
+    include/eqvio/common/aofstream.h
+
+    include/eqvio/mathematical/EqFMatrices.h
+    include/eqvio/mathematical/Geometry.h
+    include/eqvio/mathematical/IMUVelocity.h
+    include/eqvio/mathematical/VIO_eqf.h
+    include/eqvio/mathematical/VIOGroup.h
+    include/eqvio/mathematical/VIOState.h
+    include/eqvio/mathematical/VisionMeasurement.h
+
     include/eqvio/csv/CSVLine.h
     include/eqvio/csv/CSVReader.h
     include/eqvio/csv/CSVFile.h
-    include/eqvio/VisionMeasurement.h
-    include/eqvio/EqFMatrices.h
-    include/eqvio/Geometry.h
-    include/eqvio/VIOSimulator.h
+
     include/eqvio/dataserver/dataservers.h
     include/eqvio/dataserver/DatasetReaderBase.h
     include/eqvio/dataserver/ASLDatasetReader.h
@@ -136,28 +149,36 @@ set(EQVIO_HEADER_FILES
     include/eqvio/dataserver/DataServerBase.h
     include/eqvio/dataserver/SimpleDataServer.h
     include/eqvio/dataserver/ThreadedDataServer.h
+    include/eqvio/dataserver/SimulationDataServer.h
+
+    include/eqvio/VIOFilter.h
+    include/eqvio/VIOFilterSettings.h
+    include/eqvio/VIOSimulator.h
     include/eqvio/LoopTimer.h
-    include/eqvio/aofstream.h
     include/eqvio/VIOWriter.h
     )
 set(EQVIO_SOURCE_FILES
-    src/VIOState.cpp
-    src/VIOGroup.cpp
-    src/VIOFilter.cpp
-    src/VisionMeasurement.cpp
-    src/IMUVelocity.cpp
-    src/EqFMatrices.cpp
-    src/Geometry.cpp
-    src/VIOSimulator.cpp
-    src/coordinateSuite/euclid.cpp
-    src/coordinateSuite/invdepth.cpp
-    src/coordinateSuite/normal.cpp
+    src/mathematical/VIOState.cpp
+    src/mathematical/VIOGroup.cpp
+    src/mathematical/VIO_eqf.cpp
+    src/mathematical/VisionMeasurement.cpp
+    src/mathematical/IMUVelocity.cpp
+    src/mathematical/EqFMatrices.cpp
+    src/mathematical/Geometry.cpp
+    src/mathematical/coordinateSuite/euclid.cpp
+    src/mathematical/coordinateSuite/invdepth.cpp
+    src/mathematical/coordinateSuite/normal.cpp
+
     src/dataserver/ASLDatasetReader.cpp
     src/dataserver/APDatasetReader.cpp
     src/dataserver/UZHFPVDatasetReader.cpp
     src/dataserver/DataServerBase.cpp
     src/dataserver/SimpleDataServer.cpp
     src/dataserver/ThreadedDataServer.cpp
+    src/dataserver/SimulationDataServer.cpp
+
+    src/VIOFilter.cpp
+    src/VIOSimulator.cpp
     src/LoopTimer.cpp
     src/VIOWriter.cpp
 )
@@ -236,8 +257,10 @@ endif()
 
 # Add the main executable
 add_executable(eqvio_opt src/main_opt.cpp)
+add_executable(eqvio_sim src/main_sim.cpp)
 set(EXECUTABLES_LIST
     eqvio_opt
+    eqvio_sim
 )
 
 foreach(EXECUTABLE_NAME ${EXECUTABLES_LIST})

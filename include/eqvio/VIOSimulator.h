@@ -17,15 +17,9 @@
 
 #pragma once
 
-#include "VIOState.h"
-#include "common.h"
+#include "eqvio/VIOFilterSettings.h"
+#include "eqvio/mathematical/VIOState.h"
 
-/** @brief A struct with a time stamp and SE(3) pose.
- */
-struct StampedPose {
-    double t;         ///< The time stamp of the pose data
-    liepp::SE3d pose; ///< The pose data as an SE(3) element
-};
 /** @brief A simulator for VIO measurements from a given groundtruth trajectory.
  *
  * This class is able to simulate IMU and feature measurements from a given groundtruth VIO trajectory. The simulation
@@ -35,17 +29,16 @@ struct StampedPose {
  */
 class VIOSimulator {
   protected:
-    uint randomSeed; ///< The value used to seed the random number generation
-
-    mutable std::map<int, int> pointId2TrackingId; ///< A map from world point indexes to tracking id numbers
-    mutable int currentTrackingId = 0;             ///< The latest tracking id assigned to a point
+    uint randomSeed = 0; ///< The value used to seed the random number generation
 
     std::vector<StampedPose> poses;       ///< All the ground truth poses with time stamps.
     std::vector<Landmark> inertialPoints; ///< All the points generated for the simulation world.
 
-    liepp::SE3d cameraOffset = liepp::SE3d::Identity(); ///< The chosen offset between IMU and camera.
-    double fieldOfView = 60 * 3.14 / 180.;              ///< The camera's desired field of view, in radians.
-    size_t maxFeatures = 30;                            ///< The maximum number of features tracked at any given time.
+    size_t maxFeatures = 30; ///< The maximum number of features tracked at any given time.
+    bool initialNoise = false;
+    bool inputNoise = false;
+    bool outputNoise = false;
+    VIOFilter::Settings filterSettings;
 
     /** @brief Generate a number of points for the simulator world.
      *
@@ -57,7 +50,10 @@ class VIOSimulator {
      * on each of the six walls. The walls are determined as the extremities of the provided trajectory plus the given
      * distance.
      */
-    std::vector<Landmark> generateWorldPoints(const int num = 1000, const double distance = 1.0) const;
+    std::vector<Landmark>
+    generateWorldPoints(const int num = 1000, const double distance = 1.0, const int numWalls = 1) const;
+
+    Eigen::Matrix3d getInertialStates(std::vector<StampedPose>::const_iterator it, const double& ct) const;
 
   public:
     /** @brief Get a vision measurement at the given time.
@@ -73,11 +69,12 @@ class VIOSimulator {
     /** @brief Get an IMU measurement at the given time.
      *
      * @param time The time of the IMU measurement.
+     * @param samplingFrequency The frequency of IMU sampling (relevant for noise addition).
      * @return The IMU velocity at the given time.
      *
      * The IMU measurement at the given time is obtained by numerical differentiation using four groundtruth poses.
      */
-    IMUVelocity getIMU(const double& time) const;
+    IMUVelocity getIMU(const double& time, const double& samplingFrequency = -1) const;
 
     /** @brief Get a const reference to the vector of ground truth poses.
      *
@@ -85,20 +82,25 @@ class VIOSimulator {
      */
     const std::vector<StampedPose>& viewPoses() const;
 
+    /** @brief Get the full VIO state at the desired time.
+     *
+     * @param time The time at which the VIO state should be provided.
+     * @param allowNoise Whether noise should be allowed to be added to the state.
+     * @return The (potentially noisy) VIO state at the given time.
+     */
+    VIOState getFullState(const double& time = -1, const bool& allowNoise = false) const;
+
     VIOSimulator() = default;
 
     /** @brief Create a simulator from a groundtruth file and some settings
      *
-     * @param posesFileName The name of the groundtruth file
+     * @param poses The sequence of poses to use in generating measurements
      * @param settings The simulator settings YAML node
-     * @param timeScale The representation of time in the groundtruth file. e.g. 1.0e-9 for ns.
-     * @param column The first column with relevant data in the groundtruth file.
-     * @param delim The file delimiter
-     *
-     * @todo Reading groundtruth in this way should be the responsibility of the relevant datasetReader. The simulator
-     * constructor should instead just accept the list of stamped poses.
      */
     VIOSimulator(
-        const std::string& posesFileName, const YAML::Node& settings = YAML::Node(), const double timeScale = 1.0,
-        const int column = 0, const char delim = ',');
+        const std::vector<StampedPose>& poses, const GIFT::GICameraPtr& camPtr,
+        const YAML::Node& settings = YAML::Node(), const VIOFilter::Settings& filterSettings = VIOFilter::Settings());
+
+    GIFT::GICameraPtr cameraPtr;
+    liepp::SE3d cameraOffset = liepp::SE3d::Identity(); ///< The chosen offset between IMU and camera.
 };

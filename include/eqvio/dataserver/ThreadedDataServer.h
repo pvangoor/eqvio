@@ -62,7 +62,8 @@ class ThreadedDataServer : public DataServerBase {
      *
      * @param datasetReader An rvalue reference to a dataset reader unique_ptr.
      */
-    ThreadedDataServer(std::unique_ptr<DatasetReaderBase>&& datasetReader);
+    ThreadedDataServer(
+        std::unique_ptr<DatasetReaderBase>&& datasetReader, const YAML::Node& simSettings = YAML::Node());
 
     /** @brief Destroy the dataset reader, but ensure the io thread is stopped gracefully. */
     ~ThreadedDataServer();

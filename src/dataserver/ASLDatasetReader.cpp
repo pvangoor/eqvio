@@ -17,30 +17,28 @@
 
 #include "eqvio/dataserver/ASLDatasetReader.h"
 #include "yaml-cpp/yaml.h"
+#include <filesystem>
 
-ASLDatasetReader::ASLDatasetReader(const std::string& datasetMainDir, const YAML::Node& simSettings) {
+ASLDatasetReader::ASLDatasetReader(const std::string& datasetMainDir) {
     // Set up required structures
     // --------------------------
 
     // Set up the data iterator for IMU
     IMUCSVFile = CSVFile(datasetMainDir + "mav0/imu0/" + "data.csv");
-    IMUCSVFile.skipLine(); // skip the header
+    IMUCSVFile.nextLine(); // skip the header
 
     // Read the image data file
     cam_dir = datasetMainDir + "mav0/cam0/";
     ImageCSVFile = CSVFile(cam_dir + "data.csv");
-    ImageCSVFile.skipLine(); // skip the header
+    ImageCSVFile.nextLine(); // skip the header
 
     // Get the ground truth
-    const std::string groundtruthFileName = datasetMainDir + "mav0/state_groundtruth_estimate0/data.csv";
-    simulator = std::make_unique<VIOSimulator>(groundtruthFileName, simSettings, 1e-9);
+    groundtruthFileName = datasetMainDir + "mav0/state_groundtruth_estimate0/data.csv";
 
     // Read the camera file
     std::string cameraFileName = cam_dir + "sensor.yaml";
     readCamera(cameraFileName);
 }
-
-// VIOSimulator ASLDatasetReader::createSimulator() { return VIOSimulator(groundtruthFileName, simSettings, 1e-9); }
 
 std::unique_ptr<IMUVelocity> ASLDatasetReader::nextIMU() {
     if (!IMUCSVFile) {
@@ -101,4 +99,28 @@ void ASLDatasetReader::readCamera(const std::string& cameraFileName) {
     // The data is in row-major form, but eigen uses column-major by default.
     extrinsics_matrix.transposeInPlace();
     cameraExtrinsics = std::make_unique<liepp::SE3d>(extrinsics_matrix);
+}
+
+std::vector<StampedPose> ASLDatasetReader::groundtruth() {
+    // Find the poses file
+    assert(std::filesystem::exists(groundtruthFileName));
+    std::ifstream poseFile = std::ifstream(groundtruthFileName);
+    CSVReader poseFileIter(poseFile, ',');
+    ++poseFileIter; // skip header
+
+    std::vector<StampedPose> poses;
+
+    double prevPoseTime = -1e8;
+    for (CSVLine row : poseFileIter) {
+        StampedPose pose;
+        row >> pose.t >> pose.pose;
+        pose.t *= 1.0e-9;
+        if (pose.t > prevPoseTime + 1e-8) {
+            // Avoid poses with the same timestamp.
+            poses.emplace_back(pose);
+            prevPoseTime = pose.t;
+        }
+    }
+
+    return poses;
 }

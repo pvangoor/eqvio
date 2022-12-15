@@ -26,6 +26,7 @@ set(TESTS_LIST
     test_VIOLift
     test_CoordinateCharts
     test_EqFMatrices
+    test_FilterStatistics
 )
 
 set(TEST_REPS 25)

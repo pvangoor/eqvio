@@ -17,9 +17,9 @@
 
 #pragma once
 
-#include "eqvio/IMUVelocity.h"
-#include "eqvio/VIOSimulator.h"
-#include "eqvio/VisionMeasurement.h"
+#include "eqvio/mathematical/IMUVelocity.h"
+#include "eqvio/mathematical/VIOState.h"
+#include "eqvio/mathematical/VisionMeasurement.h"
 
 #include "opencv4/opencv2/core.hpp"
 #include "opencv4/opencv2/highgui.hpp"
@@ -53,15 +53,18 @@ class DatasetReaderBase {
      */
     virtual std::unique_ptr<IMUVelocity> nextIMU() = 0;
 
+    /** @brief get a list of groundtruth poses
+     *
+     * @return a vector of stamped poses of the groundtruth. The vector is empty if no groundtruth is available.
+     */
+    virtual std::vector<StampedPose> groundtruth() = 0;
+
     /** @brief Read a camera file.
      *
      * Many datasets have default camera file locations, but some do not (e.g. ROSBags, UZH-FPV). This method lets the
      * user pass different camera parameters easily.
      */
     virtual void readCamera(const std::string& cameraFileName) = 0;
-
-    std::unique_ptr<VIOSimulator>
-        simulator; ///< A simulator that can be used to generate measurements from groundtruth data.
 
     GIFT::GICameraPtr camera;                      ///< A shared pointer to the camera associated with the dataset.
     std::shared_ptr<liepp::SE3d> cameraExtrinsics; ///< A shared pointer to the camera pose w.r.t. the IMU.

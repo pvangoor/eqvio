@@ -17,11 +17,13 @@
 
 #pragma once
 
+#include <random>
+
 #include "eigen3/Eigen/Dense"
-#include "eqvio/Geometry.h"
-#include "eqvio/IMUVelocity.h"
-#include "eqvio/VIOGroup.h"
-#include "eqvio/VIOState.h"
+#include "eqvio/mathematical/Geometry.h"
+#include "eqvio/mathematical/IMUVelocity.h"
+#include "eqvio/mathematical/VIOGroup.h"
+#include "eqvio/mathematical/VIOState.h"
 #include "gtest/gtest.h"
 
 GIFT::GICameraPtr createDefaultCamera();
@@ -48,4 +50,26 @@ void testDifferential(const F& f, const Eigen::VectorXd& x, const Eigen::MatrixX
     }
     Eigen::MatrixXd numericalDf = numericalDifferential(f, x, h);
     assertMatrixEquality(Df, numericalDf, h);
+}
+
+template <typename T, typename S>
+std::vector<T> weightedResample(const std::vector<T>& samples, const std::vector<S>& weights) {
+    static std::mt19937 rng = std::mt19937(0);
+    static std::uniform_real_distribution<double> dist{0, 1};
+    assert(samples.size() == weights.size());
+    const int N = samples.size();
+    std::vector<T> resamples(N);
+
+    int j = 0;
+    double totalWeight = weights.at(0);
+    for (int k = 0; k < N; ++k) {
+        const double nextThreshold = (dist(rng) + k) / N;
+        while (totalWeight < nextThreshold && j + 1 < N) {
+            ++j;
+            totalWeight += weights.at(j);
+        }
+        resamples.at(k) = samples.at(j);
+    }
+
+    return resamples;
 }

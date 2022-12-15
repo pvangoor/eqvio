@@ -31,7 +31,8 @@ class PlotData3 {
     int size = 2;
 
   public:
-    PlotData3(const std::vector<Eigen::Vector3d>& dataPoints, const GLenum drawType = GL_POINTS,
+    PlotData3(
+        const std::vector<Eigen::Vector3d>& dataPoints, const GLenum drawType = GL_POINTS,
         const Eigen::Vector4d& color = Eigen::Vector4d(0, 0, 1, 1), const int size = 2) {
         this->coords = dataPoints;
         this->drawType = drawType;
@@ -40,7 +41,8 @@ class PlotData3 {
         this->size = size;
     }
 
-    PlotData3(const std::vector<Eigen::Vector3d>& dataPoints, const GLenum drawType = GL_POINTS,
+    PlotData3(
+        const std::vector<Eigen::Vector3d>& dataPoints, const GLenum drawType = GL_POINTS,
         const std::vector<Eigen::Vector4d>& colors = {}, const int size = 2) {
         assert(colors.size() == dataPoints.size());
         this->coords = dataPoints;
