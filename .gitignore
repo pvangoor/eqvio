@@ -4,3 +4,4 @@ build_stable/*
 .cache/*
 cmake-build-Release/*
 *.swp
+EQVIO_output*

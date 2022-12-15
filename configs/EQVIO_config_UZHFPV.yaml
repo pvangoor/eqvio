@@ -1,44 +1,44 @@
 GIFT:
-  equaliseImageHistogram: false
-  featureDist: 85.14085350941133
-  featureSearchThreshold: 0.4678407422980303
-  maxError: 24.859286812166822
+  equaliseImageHistogram: true
+  featureDist: 25.91373395034039
+  featureSearchThreshold: 0.7
+  maxError: 100.08998519259788
   maxFeatures: 40
   maxLevel: 3
-  minHarrisQuality: 0.041154574134693075
+  minHarrisQuality: 0.08859465154404257
   ransacParams:
-    inlierThreshold: 0.0023054130418769516
-    maxIterations: 53
-    minDataPoints: 5
-    minInliers: 47
-  trackedFeatureDist: 18.31029378391811
-  winSize: 13
+    inlierThreshold: 0.000991045856248861
+    maxIterations: 20
+    minDataPoints: 10
+    minInliers: 37
+  trackedFeatureDist: 9.995503774595479
+  winSize: 21
 eqf:
   initialValue:
-    sceneDepth: 5.063359392968643
+    sceneDepth: 8.891397050194614
   initialVariance:
-    attitude: 0.09440608762859234
-    biasAcc: 0.6343716263804418
-    biasGyr: 2.859235978270507
-    cameraAttitude: 0.01690927549681094
-    cameraPosition: 0.010721941602677596
-    point: 77.24860136667657
-    position: 0.1
-    velocity: 7.286181745132278e-05
+    attitude: 0.10282752317467045
+    biasAcc: 1.2232071190499316
+    biasGyr: 1.1673134780260075
+    cameraAttitude: 1.727825980507864e-07
+    cameraPosition: 3.349654391578276e-07
+    point: 100.0
+    position: 0.00011220184543019634
+    velocity: 3.6517412725483775e-06
   measurementNoise:
-    feature: 0.5334515782275915
-    featureOutlierAbs: 4.281940468140158
-    featureOutlierProb: 0.10406031980156036
-    featureRetention: 0.2276564690508065
+    feature: 3.7583740428844425
+    featureOutlierAbs: 5.4509224619256385
+    featureOutlierProb: 0.23374912831534894
+    featureRetention: 0.2
   processVariance:
-    attitude: 1.584893192461114e-05
+    attitude: 6.219421634147766e-08
     biasAcc: 0.0
     biasGyr: 0.0
-    cameraAttitude: 8.535913392913662e-07
-    cameraPosition: 5.892675149026958e-05
-    point: 0.001
-    position: 1.0e-05
-    velocity: 0.0009172759353897796
+    cameraAttitude: 2.2630153511576583e-06
+    cameraPosition: 6.853895838650084e-07
+    point: 0.000530103448340995
+    position: 1.2589961848499808e-05
+    velocity: 0.012232071190499315
   settings:
     coordinateChoice: InvDepth
     fastRiccati: true
@@ -49,15 +49,14 @@ eqf:
     useInnovationLift: true
     useMedianDepth: false
   velocityNoise:
-    acc: 0.0031188805760819604
-    accBias: 0.009484699993745682
-    gyr: 0.0001556083863968156
-    gyrBias: 4.324987346585896e-05
+    acc: 3.262345818455677e-05
+    accBias: 0.0063404671195099425
+    gyr: 0.0011913242870580211
+    gyrBias: 0.00020008996495836354
 main:
-  cameraLag: 0.010541058194473643
+  cameraLag: 0.012232071190499317
   limitRate: 0.0
   startTime: 0.0
-  writeFilter: false
   writeState: true
 sim:
   cameraOffset:

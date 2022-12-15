@@ -1,43 +1,43 @@
 GIFT:
   equaliseImageHistogram: false
   featureDist: 79.80937096082073
-  featureSearchThreshold: 0.9379545270444757
+  featureSearchThreshold: 0.8854861727179565
   maxError: 76.21556706799433
   maxFeatures: 40
   maxLevel: 3
-  minHarrisQuality: 0.0792803058355733
+  minHarrisQuality: 0.0792713927794865
   ransacParams:
-    inlierThreshold: 0.0023054130418769516
+    inlierThreshold: 0.0023121620935037416
     maxIterations: 34
     minDataPoints: 5
     minInliers: 30
-  trackedFeatureDist: 30.794741475351454
+  trackedFeatureDist: 30.79127938908608
   winSize: 21
 eqf:
   initialValue:
     sceneDepth: 5.00028218320243
   initialVariance:
-    attitude: 0.09603305184836965
-    biasAcc: 1.1194982976203554
-    biasGyr: 3868.1205463305273
+    attitude: 0.13565029126052572
+    biasAcc: 1.5813333765300104
+    biasGyr: 97162.79515771076
     cameraAttitude: 0.0010228558965517584
-    cameraPosition: 0.009356076194898328
-    point: 103.18653922187126
+    cameraPosition: 0.023501400846134893
+    point: 129.90415638150924
     position: 0.1
-    velocity: 1.4224183416273291e-07
+    velocity: 8.974852995731e-08
   measurementNoise:
     feature: 1.9297839969591413
-    featureOutlierAbs: 3.8624710238054467
-    featureOutlierProb: 0.030489654614197025
-    featureRetention: 0.07409348044214313
+    featureOutlierAbs: 4.852186665580312
+    featureOutlierProb: 0.03229809583062128
+    featureRetention: 0.18594708334486176
   processVariance:
-    attitude: 6.293853445139084e-05
+    attitude: 6.025875320811407e-05
     biasAcc: 0.0
     biasGyr: 0.0
-    cameraAttitude: 9.025447618183232e-06
-    cameraPosition: 6.853895838650083e-06
-    point: 0.00029845855582693806
-    position: 1.0e-05
+    cameraAttitude: 5.075382174045239e-06
+    cameraPosition: 1.2188313140115635e-05
+    point: 0.00029845436136043135
+    position: 9.981466095928483e-06
     velocity: 0.025317333863551263
   settings:
     coordinateChoice: InvDepth
@@ -49,10 +49,10 @@ eqf:
     useInnovationLift: true
     useMedianDepth: false
   velocityNoise:
-    acc: 0.008806026654404825
-    accBias: 0.003114097402109808
-    gyr: 0.00022955177512083897
-    gyrBias: 0.00013342667198611564
+    acc: 0.012438843268295521
+    accBias: 0.004462289865453429
+    gyr: 0.000243153572917808
+    gyrBias: 0.00013372703521098622
 main:
   limitRate: 0.0
   startTime: 0.0
