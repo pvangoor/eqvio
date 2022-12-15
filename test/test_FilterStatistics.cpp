@@ -95,7 +95,7 @@ class FilterStatisticsTest : public ::testing::Test {
     }
 };
 
-TEST_F(FilterStatisticsTest, initialDistribution) { std::cout << computeMeanNEES(particles) << std::endl; }
+TEST_F(FilterStatisticsTest, initialDistribution) { EXPECT_NEAR(computeMeanNEES(particles), 1.0, 0.1); }
 
 TEST_F(FilterStatisticsTest, trueInputDistribution) {
     const double dt = 0.2;
@@ -111,11 +111,8 @@ TEST_F(FilterStatisticsTest, trueInputDistribution) {
             trueVel, dt, 0 * settings.constructInputGainMatrix(), 0 * settings.constructStateGainMatrix(ids.size()));
         filter.integrateObserverState(trueVel, dt, true);
 
-        std::cout << computeMeanNEES(particles) << std::endl;
+        EXPECT_NEAR(computeMeanNEES(particles), 1.0, 1.0);
     }
-
-    const Eigen::MatrixXd SigmaTrue = estimateParticleCovariance(particles);
-    assertMatrixEquality(SigmaTrue, filter.Sigma, 1.0e-4);
 }
 
 TEST_F(FilterStatisticsTest, inputDistribution) {
@@ -136,7 +133,7 @@ TEST_F(FilterStatisticsTest, inputDistribution) {
             trueVel, dt, 0 * settings.constructInputGainMatrix(), 0 * settings.constructStateGainMatrix(ids.size()));
         filter.integrateObserverState(trueVel, dt, true);
 
-        std::cout << computeMeanNEES(particles) << std::endl;
+        EXPECT_NEAR(computeMeanNEES(particles), 1.0, 0.1);
     }
 }
 
@@ -167,5 +164,5 @@ TEST_F(FilterStatisticsTest, outputDistribution) {
     // Incorporate the measurement into the filter
     filter.performVisionUpdate(measOutput, outputGain);
 
-    std::cout << computeMeanNEES(particles) << std::endl;
+    EXPECT_NEAR(computeMeanNEES(particles), 1.0, 0.5);
 }
