@@ -7,3 +7,4 @@
 [submodule "external/LiePP"]
 	path = external/LiePP
 	url = git@github.com:pvangoor/LiePP
+	branch = main
