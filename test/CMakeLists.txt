@@ -17,6 +17,7 @@ target_include_directories(testing_utilities_lib PUBLIC
 )
 target_link_libraries(testing_utilities_lib
     eqvio_lib
+    gtest_main
 )
 
 set(TESTS_LIST
