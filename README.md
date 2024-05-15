@@ -39,14 +39,17 @@ intrinsics.yaml is not needed as it is included in each sensor folder
 `
 ./build/eqvio_opt  ./data/MH_03_medium/ configs/EQVIO_config_EuRoC_stationary.yaml --display --mode asl
 `
+
 **ROS bag**
 
-intrinsics.yaml is necessary, and it is extracted from the sensors' .yaml. For euroc dataset, the sensors are the same, so one intrinsics.yaml fits all.
+intrinsics.yaml is necessary, and it is extracted from the sensors' .yaml. For euroc dataset, the sensors are the same, so one intrinsics.yaml fits all. In our version, it can be found in ./data/intrinsics.yaml.
+
 ```
 ./build/eqvio_opt  ./data/euroc/MH_03_medium.bag configs/EQVIO_config_EuRoC_stationary.yaml --display --mode ros
 
 ./build/eqvio_opt  ./data/euroc/V1_02_medium.bag configs/EQVIO_config_EuRoC_stationary.yaml --display --mode ros
 ```
+
 ![run](docs/run.png)
 
 And result can be seen in the output folder.
