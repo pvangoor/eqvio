@@ -5,3 +5,7 @@ build_stable/*
 cmake-build-Release/*
 *.swp
 EQVIO_output*
+*.zip
+*.bag
+!*.yaml
+data/*

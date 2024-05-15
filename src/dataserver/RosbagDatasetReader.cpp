@@ -63,7 +63,33 @@ RosbagDatasetReader::RosbagDatasetReader(
 }
 
 void RosbagDatasetReader::readCamera(const std::string& cameraFileName) {
-    camera = std::make_shared<GIFT::StandardCamera>(GIFT::StandardCamera(cv::String(cameraFileName)));
+    YAML::Node cameraFileNode = YAML::LoadFile(cameraFileName);
+
+    // Read the intrinsics
+    cv::Size imageSize;
+    imageSize.width = cameraFileNode["resolution"][0].as<int>();
+    imageSize.height = cameraFileNode["resolution"][1].as<int>();
+
+    cv::Mat K = cv::Mat::eye(3, 3, CV_64F);
+    K.at<double>(0, 0) = cameraFileNode["intrinsics"][0].as<double>();
+    K.at<double>(1, 1) = cameraFileNode["intrinsics"][1].as<double>();
+    K.at<double>(0, 2) = cameraFileNode["intrinsics"][2].as<double>();
+    K.at<double>(1, 2) = cameraFileNode["intrinsics"][3].as<double>();
+
+    std::vector<double> distortion;
+    distortion = cameraFileNode["distortion_coefficients"].as<std::vector<double>>();
+
+    GIFT::StandardCamera stdCamera = GIFT::StandardCamera(imageSize, K, distortion);
+    this->camera = std::make_shared<GIFT::StandardCamera>(stdCamera);
+    // camera = std::make_shared<GIFT::StandardCamera>(GIFT::StandardCamera(cv::String(cameraFileName)));
+
+    // Read the extrinsics
+    const std::vector<double> extrinsics_entries = cameraFileNode["T_BS"]["data"].as<std::vector<double>>();
+    Eigen::Matrix4d extrinsics_matrix(extrinsics_entries.data());
+    // The data is in row-major form, but eigen uses column-major by default.
+    extrinsics_matrix.transposeInPlace();
+    cameraExtrinsics = std::make_unique<liepp::SE3d>(extrinsics_matrix);
+
 }
 
 std::unique_ptr<StampedImage> RosbagDatasetReader::nextImage() {
