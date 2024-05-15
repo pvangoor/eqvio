@@ -40,12 +40,12 @@ intrinsics.yaml is not needed as it is included in each sensor folder
 ./build/eqvio_opt  ./data/MH_03_medium/ configs/EQVIO_config_EuRoC_stationary.yaml --display --mode asl
 `
 
-![run](docs/intrin.png)
 
 **ROS bag**
 
-intrinsics.yaml is necessary, and it is extracted from the sensors' .yaml. For euroc dataset, the sensors are the same, so one intrinsics.yaml fits all. In our version, it can be found in root folder. When try to run ros bag, you should put it in the same folder of the bags.
+The essential intrinsics.yaml is extracted from the sensors'.yaml files. Since all of the sensors in the Euroc dataset are identical, one intrinsics.yaml suits all. It is located in the root folder in our version. You should place the intrinsics.yaml in the same folder as the other bags when attempting to execute it.
 
+![run](docs/intrin.png)
 
 ```
 ./build/eqvio_opt  ./data/euroc/MH_03_medium.bag configs/EQVIO_config_EuRoC_stationary.yaml --display --mode ros
