@@ -8,4 +8,5 @@ EQVIO_output*
 *.zip
 *.bag
 !*.yaml
-data/*
+data/euroc/*
+
