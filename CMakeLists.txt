@@ -8,8 +8,8 @@ include(CheckCXXCompilerFlag)
 # Options and settings
 option( EQVIO_BUILD_TESTS "Build Tests" ON)
 option( EQVIO_BUILD_VISUALISATION "Build Visualisation Tool" ON)
-option( EQVIO_BUILD_ROSBAG "Build EqVIO with rosbag reading enabled" ON)
-option( EQVIO_SUPPORT_CONCEPTS "Build EqVIO using c++20 concepts" OFF)
+option( EQVIO_BUILD_ROSBAG "Build EqVIO with rosbag reading enabled" OFF)
+option( EQVIO_SUPPORT_CONCEPTS "Build EqVIO using c++20 concepts" ON)
 option( EXTRA_WARNINGS "Enable extra warnings from gcc" ON)
 
 if(EQVIO_SUPPORT_CONCEPTS OR (${CMAKE_CXX_STANDARD} EQUAL 20))
