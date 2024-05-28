@@ -166,7 +166,7 @@ int main(int argc, char const* argv[]) {
                 << std::endl;
         }
     } else {
-        outputFileNameStream << "output/EQVIO_output_" << std::put_time(std::localtime(&t0), "%F_%T") << "/";
+        outputFileNameStream << "EQVIO_output_" << std::put_time(std::localtime(&t0), "%F_%T") << "/";
     }
     VIOWriter vioWriter(outputFileNameStream.str());
 
