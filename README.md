@@ -17,35 +17,51 @@ Please see https://pvangoor.github.io/eqvio_docs/ for the documentation.
 - Doxygen (for documentation): `sudo apt install doxygen`
 
 ### Build Guide (for ros users)
-Modify `Options and settings` in CMakeLists.txt
+
+Modify the following settings in cmake if you want ROS compatibility.
+You can use command-line cmake, use cmake-gui for convenience, or edit the CMakeLists.txt directly.
+
 ```
-option( EQVIO_BUILD_TESTS "Build Tests" ON)
-option( EQVIO_BUILD_VISUALISATION "Build Visualisation Tool" ON)
-option( EQVIO_BUILD_ROSBAG "Build EqVIO with rosbag reading enabled" ON)
-option( EQVIO_SUPPORT_CONCEPTS "Build EqVIO using c++20 concepts" OFF)
-option( EXTRA_WARNINGS "Enable extra warnings from gcc" ON)
+EQVIO_BUILD_TESTS ON
+EQVIO_BUILD_VISUALISATION ON
+EQVIO_BUILD_ROSBAG ON
+EQVIO_SUPPORT_CONCEPTS OFF
+EXTRA_WARNINGS ON
 ```
-And then run 
+
+Then do the following commands from a terminal in the main directory to build EqVIO:
+
 ```
+mkdir build
+cd build
 cmake ..  
 cmake --build . -j8
 ```
 
 ### Running Guide
 
-**ASL Dataset Format**
+#### ASL Dataset Format
 
-intrinsics.yaml is not needed as it is included in each sensor folder	
-`
-./build/eqvio_opt  ./data/MH_03_medium/ configs/EQVIO_config_EuRoC_stationary.yaml --display --mode asl
-`
+The file `intrinsics.yaml` is not needed as the required data is included in each sensor folder. Run EqVIO with:
+
+```
+./build/eqvio_opt  ~/data/MH_03_medium/ configs/EQVIO_config_EuRoC_stationary.yaml --display --mode asl
+```
+
+You will need to replace the dataset directory with a directory of your choice.
 
 
-**ROS bag**
+#### ROS bag
 
-The essential intrinsics.yaml is extracted from the sensors'.yaml files. Since all of the sensors in the Euroc dataset are identical, one intrinsics.yaml suits all. It is located in the root folder in our version. You should place the intrinsics.yaml in the same folder as the other bags when attempting to execute it.
+The `intrinsics.yaml` file is extracted from the sensors'.yaml files.
+Since all of the sensors in the EuRoC dataset are identical, one intrinsics.yaml suits all.
+If you plan to use a different dataset, you will need to change the intrinsics to match accordingly.
+The example file is located in the root folder.
+To use it, you should place the `intrinsics.yaml` file in the same folder as the ROSbags you wish to use:
 
 ![run](docs/intrin.png)
+
+Run EqVIO on ROSbags using:
 
 ```
 ./build/eqvio_opt  ./data/euroc/MH_03_medium.bag configs/EQVIO_config_EuRoC_stationary.yaml --display --mode ros
@@ -55,5 +71,5 @@ The essential intrinsics.yaml is extracted from the sensors'.yaml files. Since a
 
 ![run](docs/run.png)
 
-And result can be seen in the output folder.
+And result can be seen in the output file.
   
