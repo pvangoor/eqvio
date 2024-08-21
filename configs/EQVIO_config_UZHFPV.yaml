@@ -1,5 +1,6 @@
 GIFT:
   equaliseImageHistogram: true
+  useFastFeatures: false
   featureDist: 25.91373395034039
   featureSearchThreshold: 0.7
   maxError: 100.08998519259788
