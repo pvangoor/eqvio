@@ -45,7 +45,7 @@ cmake --build . -j8
 The file `intrinsics.yaml` is not needed as the required data is included in each sensor folder. Run EqVIO with:
 
 ```
-./build/eqvio_opt  ~/data/MH_03_medium/ configs/EQVIO_config_EuRoC_stationary.yaml --display --mode asl
+./build/eqvio_opt  ~/datasets/euroc_asl/V1_01_easy/ configs/EQVIO_config_EuRoC_stationary.yaml --display --mode asl
 ```
 
 You will need to replace the dataset directory with a directory of your choice.
