@@ -99,6 +99,12 @@ liepp::SE3d alignTrajectories(const std::vector<StampedPose>& estTrajectory, con
         estTrajectoryMatched.emplace_back(estTrajectoryIt->pose.x);
         refTrajectoryMatched.emplace_back(refTrajectoryIt->pose.x);
     }
+    if (estTrajectoryMatched.size() == 0) {
+        return liepp::SE3d::Identity();
+    }
+    if (estTrajectoryMatched.size() <= 100) {
+        return refTrajectory.begin()->pose * estTrajectory.begin()->pose.inverse();
+    }
 
     return alignUmeyama(estTrajectoryMatched, refTrajectoryMatched);
 }
