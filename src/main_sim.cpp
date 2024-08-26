@@ -157,7 +157,7 @@ int main(int argc, char const* argv[]) {
 
             // Optionally visualise the filter data
             if (displayFlag) {
-                visualiser.updateMapDisplay(estimatedState);
+                visualiser.updateMapDisplay(estimatedState, filter.getTime());
             }
 
             // Limit the loop rate

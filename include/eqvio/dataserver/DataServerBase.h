@@ -42,6 +42,8 @@ class DataServerBase {
     virtual GIFT::GICameraPtr camera() const;
     /** @brief Get a pointer to the dataset camera extrinsics*/
     virtual std::shared_ptr<liepp::SE3d> cameraExtrinsics() const;
+    /** @brief Get the full groundtruth trajectory if it is available. Otherwise the returned vector is empty. */
+    virtual std::vector<StampedPose> getTrajectory() {return datasetReaderPtr->groundtruth();}
 
     virtual std::shared_ptr<liepp::SE3d> groundTruthPose(const double stamp = -1) const;
 

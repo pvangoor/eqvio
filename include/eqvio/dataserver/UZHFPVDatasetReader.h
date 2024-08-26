@@ -37,6 +37,6 @@ class UZHFPVDatasetReader : public DatasetReaderBase {
     virtual void readCamera(const std::string& cameraFileName) override;
     virtual std::vector<StampedPose> groundtruth() override;
 
-    /** @brief Construct the ASL dataset reader from the given dataset directory and simulation settings. */
+    /** @brief Construct the UZH FPV dataset reader from the given dataset directory and simulation settings. */
     UZHFPVDatasetReader(const std::string& datasetFileName);
 };
