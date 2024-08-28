@@ -9,4 +9,4 @@ EQVIO_output*
 *.bag
 !*.yaml
 data/euroc/*
-
+**.pyc

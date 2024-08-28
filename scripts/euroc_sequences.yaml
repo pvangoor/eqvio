@@ -1,0 +1,40 @@
+# YAML file containing information about EuRoC sequences.
+# Note that the absolute file path is given in each case.
+MH_01_easy:
+  fname: "/home/pieter/datasets/MH_01_easy/"
+  mode: "asl"
+  start: 40.0 # After calibration motion
+MH_02_easy:
+  fname: "/home/pieter/datasets/MH_02_easy/"
+  mode: "asl"
+  start: 35.0 # After calibration motion
+MH_03_medium:
+  fname: "/home/pieter/datasets/MH_03_medium/"
+  mode: "asl"
+  start: 10.0 # After calibration motion
+MH_04_difficult:
+  fname: "/home/pieter/datasets/MH_04_difficult/"
+  mode: "asl"
+  start: 17.0 # After calibration motion
+MH_05_difficult:
+  fname: "/home/pieter/datasets/MH_05_difficult/"
+  mode: "asl"
+  start: 18.0 # After calibration motion
+V1_01_easy:
+  fname: "/home/pieter/datasets/V1_01_easy/"
+  mode: "asl"
+V1_02_medium:
+  fname: "/home/pieter/datasets/V1_02_medium/"
+  mode: "asl"
+V1_03_difficult:
+  fname: "/home/pieter/datasets/V1_03_difficult/"
+  mode: "asl"
+V2_01_easy:
+  fname: "/home/pieter/datasets/V2_01_easy/"
+  mode: "asl"
+V2_02_medium:
+  fname: "/home/pieter/datasets/V2_02_medium/"
+  mode: "asl"
+V2_03_difficult:
+  fname: "/home/pieter/datasets/V2_03_difficult/"
+  mode: "asl"
